@@ -612,9 +612,14 @@ function saveRecord(){
         ) || 0,
 
         memo:
-        document.getElementById("memo").value
+        document.getElementById("memo").value,
 
-    };
+        createdAt:
+        editingId
+            ? records.find(r => r.id === editingId)?.createdAt || Date.now()
+            : Date.now()
+
+};
 
     record.profit =
         record.collection -
@@ -825,12 +830,24 @@ function renderList(){
 
     const displayRecords =
     [...records]
-    .sort(
-        (a,b)=>
-        new Date(b.date)
-        -
-        new Date(a.date)
-    );
+    .sort((a,b)=>{
+
+        const dateCompare =
+            new Date(b.date)
+            -
+            new Date(a.date);
+
+        if(dateCompare !== 0){
+
+            return dateCompare;
+
+        }
+
+        return (b.createdAt || 0)
+             -
+               (a.createdAt || 0);
+
+    });
 
 
     tbody.innerHTML =
