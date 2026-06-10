@@ -1,0 +1,2056 @@
+<!--Phase1 Part1（UI＋データ保存基盤）-->
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ver6Pro Lite</title>
+
+<link
+rel="manifest"
+href="manifest.json">
+
+<meta
+name="theme-color"
+content="#121212">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:sans-serif;
+    background:#121212;
+    color:#ffffff;
+    padding-bottom:70px;
+}
+
+.page{
+    display:none;
+    padding:12px;
+}
+
+.page.active{
+    display:block;
+}
+
+.card{
+    background:#1f1f1f;
+    border-radius:12px;
+    padding:12px;
+    margin-bottom:10px;
+}
+
+input,
+textarea,
+button{
+    width:100%;
+    padding:10px;
+    margin-top:8px;
+
+    background:#2a2a2a;
+    color:white;
+
+    border:1px solid #444;
+    border-radius:8px;
+
+    font-size:16px;
+    box-sizing:border-box;
+}
+select{
+    display:block;
+    width:100%;
+    padding:10px;
+    margin-top:8px;
+
+    background:#2a2a2a;
+    color:white;
+
+    border:1px solid #444;
+    border-radius:8px;
+
+    font-size:16px;
+    box-sizing:border-box;
+}
+
+button{
+    cursor:pointer;
+}
+
+.bottom-nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    height:60px;
+    display:flex;
+    background:#1b1b1b;
+    border-top:1px solid #333;
+}
+
+.bottom-nav button{
+    flex:1;
+    border:none;
+    background:none;
+    color:white;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,
+td{
+    border:1px solid #333;
+    padding:8px;
+    font-size:12px;
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.7);
+    display:none;
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-content{
+    background:#1f1f1f;
+    width:90%;
+    padding:16px;
+    border-radius:12px;
+}
+
+#registerPage select{
+    display:block !important;
+    width:100% !important;
+    min-height:42px;
+    padding:10px;
+    margin-top:8px;
+    background:#2a2a2a;
+    color:#ffffff;
+    border:1px solid #444;
+    border-radius:8px;
+    font-size:16px;
+    box-sizing:border-box;
+    appearance:none;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+}
+
+#registerPage input,
+#registerPage select,
+#registerPage textarea,
+#registerPage button{
+    width:100%;
+    padding:10px;
+    margin-top:8px;
+
+    background:#2a2a2a;
+    color:white;
+
+    border:1px solid #444;
+    border-radius:8px;
+
+    font-size:16px;
+    box-sizing:border-box;
+}
+
+#registerPage select{
+    appearance:none;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    min-height:42px;
+}
+
+#restoreFile{
+
+    width:100%;
+
+    margin-top:8px;
+
+    padding:8px;
+
+    background:#2a2a2a;
+
+    color:#ffffff;
+
+    border:1px solid #444;
+
+    border-radius:8px;
+
+    box-sizing:border-box;
+
+}
+
+html,
+body{
+    overscroll-behavior-y: contain;
+}
+
+</style>
+
+</head>
+<body>
+
+<!-- HOME -->
+
+<div id="homePage" class="page active">
+
+<h2>ホーム</h2>
+
+<div class="card">
+総収支<br>
+<b id="totalProfit">0円</b>
+</div>
+
+<div class="card">
+今月収支<br>
+<b id="monthProfit">0円</b>
+</div>
+
+<div class="card">
+勝率<br>
+<b id="winRate">0%</b>
+</div>
+
+<div class="card">
+実戦回数<br>
+<b id="playCount">0</b>
+</div>
+
+<div class="card">
+最近5件
+<div id="recentList"></div>
+</div>
+
+</div>
+
+<!-- SETTINGS -->
+
+<div id="settingsPage" class="page">
+
+<h2>設定</h2>
+
+<div class="card">
+
+<h3>店舗管理</h3>
+
+<input
+type="text"
+id="newShop"
+placeholder="店舗名">
+
+<button id="addShopBtn">
+店舗追加
+</button>
+
+<div id="shopList">
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>機種管理</h3>
+
+<input
+type="text"
+id="newMachine"
+placeholder="機種名">
+
+<button id="addMachineBtn">
+機種追加
+</button>
+
+<div id="machineList">
+</div>
+
+</div>
+
+<!-- BACKUP -->
+
+<div class="card">
+
+<h3>バックアップ</h3>
+
+<button id="backupBtn">
+JSONバックアップ
+</button>
+
+<input
+type="file"
+id="restoreFile"
+accept=".json"
+style="margin-top:12px;">
+
+<button id="restoreBtn">
+JSON復元
+</button>
+
+<p style="
+margin-top:10px;
+font-size:12px;
+color:#bbbbbb;
+">
+
+※ JSONバックアップは、
+実戦データ・店舗・機種をまとめて保存します。
+
+</p>
+
+</div>
+
+</div>
+
+
+<!-- ANALYSIS -->
+
+<div id="analysisPage" class="page">
+
+<h2>分析</h2>
+
+<div class="card">
+
+<h3>基本分析</h3>
+
+<p>
+総収支：
+<span id="analysisTotalProfit">
+0円
+</span>
+</p>
+
+<p>
+今月収支：
+<span id="analysisMonthProfit">
+0円
+</span>
+</p>
+
+<p>
+実戦回数：
+<span id="analysisPlayCount">
+0回
+</span>
+</p>
+
+<p>
+勝率：
+<span id="analysisWinRate">
+0%
+</span>
+</p>
+
+<p>
+平均収支：
+<span id="analysisAverageProfit">
+0円
+</span>
+</p>
+
+<p>
+最大勝ち：
+<span id="analysisMaxWin">
+0円
+</span>
+</p>
+
+<p>
+最大負け：
+<span id="analysisMaxLose">
+0円
+</span>
+</p>
+
+</div>
+
+
+<div class="card">
+
+<h3>店舗別分析</h3>
+
+<div id="shopAnalysis">
+
+データなし
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>機種別分析</h3>
+
+<div id="machineAnalysis">
+
+データなし
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- LIST -->
+
+<div id="listPage" class="page">
+
+<h2>一覧</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>日付</th>
+<th>店舗</th>
+<th>機種</th>
+<th>収支</th>
+<th>累計</th>
+</tr>
+</thead>
+
+<tbody id="recordTable">
+</tbody>
+
+</table>
+
+</div>
+
+<!-- REGISTER -->
+
+<div id="registerPage" class="page">
+
+<h2>登録</h2>
+
+<input type="date" id="date">
+
+<select id="shop">
+</select>
+
+<select id="machine">
+</select>
+
+<input
+type="number"
+id="investment"
+placeholder="投資">
+
+<input
+type="number"
+id="collection"
+placeholder="回収">
+
+<textarea
+id="memo"
+placeholder="メモ"></textarea>
+
+<button id="saveBtn">
+保存
+</button>
+
+</div>
+
+<!-- DETAIL -->
+
+<div id="detailPage" class="page">
+
+<h2>詳細</h2>
+
+<div
+class="card"
+id="detailArea">
+</div>
+
+<button id="editBtn">
+編集
+</button>
+
+<button id="deleteBtn">
+削除
+</button>
+
+</div>
+
+<!-- DELETE MODAL -->
+
+<div
+class="modal"
+id="deleteModal">
+
+<div class="modal-content">
+
+<p>削除しますか？</p>
+
+<button id="confirmDelete">
+削除
+</button>
+
+<button id="cancelDelete">
+キャンセル
+</button>
+
+</div>
+
+</div>
+
+<!-- NAV -->
+
+<div class="bottom-nav">
+
+<button data-page="homePage">
+ホーム
+</button>
+
+<button data-page="settingsPage">
+設定
+</button>
+
+<button data-page="analysisPage">
+分析
+</button>
+
+<button data-page="listPage">
+一覧
+</button>
+
+<button data-page="registerPage">
+登録
+</button>
+
+</div>
+
+<script>
+
+const STORAGE_KEY = "ver6_records";
+
+let records =
+JSON.parse(
+localStorage.getItem(STORAGE_KEY)
+|| "[]"
+);
+
+let editingId = null;
+let selectedId = null;
+
+function saveStorage(){
+
+localStorage.setItem(
+STORAGE_KEY,
+JSON.stringify(records)
+);
+
+}
+
+function showPage(pageId){
+
+document
+.querySelectorAll(".page")
+.forEach(page=>{
+
+page.classList.remove("active");
+
+});
+
+document
+.getElementById(pageId)
+.classList.add("active");
+
+}
+
+document
+.querySelectorAll("[data-page]")
+.forEach(btn=>{
+
+btn.addEventListener("click",()=>{
+
+showPage(
+btn.dataset.page
+);
+
+});
+
+});
+
+<!--Phase1 Part2-->
+
+/* =========================
+   登録処理
+========================= */
+
+document
+.getElementById("saveBtn")
+.addEventListener("click", saveRecord);
+
+function saveRecord(){
+
+    const record = {
+
+        id:
+        editingId || Date.now(),
+
+        date:
+        document.getElementById("date").value,
+
+        shop:
+        document.getElementById("shop").value,
+
+        machine:
+        document.getElementById("machine").value,
+
+        investment:
+        Number(
+            document.getElementById("investment").value
+        ) || 0,
+
+        collection:
+        Number(
+            document.getElementById("collection").value
+        ) || 0,
+
+        memo:
+        document.getElementById("memo").value
+
+    };
+
+    record.profit =
+        record.collection -
+        record.investment;
+
+    if(editingId){
+
+        const index =
+        records.findIndex(
+            r => r.id === editingId
+        );
+
+        records[index] = record;
+
+        editingId = null;
+
+    }else{
+
+        records.push(record);
+
+    }
+
+    saveStorage();
+
+    clearForm();
+
+    renderAll();
+
+    showPage("listPage");
+
+}
+
+
+/* =========================
+   フォーム初期化
+========================= */
+
+function clearForm(){
+
+    document.getElementById("date").value = "";
+
+    document.getElementById("shop").value = "";
+
+    document.getElementById("machine").value = "";
+
+    document.getElementById("investment").value = "";
+
+    document.getElementById("collection").value = "";
+
+    document.getElementById("memo").value = "";
+
+}
+
+
+/* =========================
+   ホーム描画
+========================= */
+
+function renderHome(){
+
+    const totalProfit =
+    records.reduce(
+        (sum,r)=>sum+r.profit,
+        0
+    );
+
+    document
+    .getElementById("totalProfit")
+    .textContent =
+    totalProfit.toLocaleString()
+    + "円";
+
+
+    const now = new Date();
+
+    const currentMonth =
+    now.getFullYear()
+    + "-"
+    + String(
+        now.getMonth()+1
+      ).padStart(2,"0");
+
+    const monthProfit =
+    records
+    .filter(r=>
+        r.date.startsWith(
+            currentMonth
+        )
+    )
+    .reduce(
+        (sum,r)=>sum+r.profit,
+        0
+    );
+
+    document
+    .getElementById("monthProfit")
+    .textContent =
+    monthProfit.toLocaleString()
+    + "円";
+
+
+    const winCount =
+    records.filter(
+        r=>r.profit>0
+    ).length;
+
+    const winRate =
+    records.length === 0
+    ? 0
+    : (winCount / records.length * 100);
+
+    document
+    .getElementById("winRate")
+    .textContent =
+    winRate.toFixed(1)
+    + "%";
+
+
+    document
+    .getElementById("playCount")
+    .textContent =
+    records.length;
+
+
+    renderRecent();
+
+}
+
+
+/* =========================
+   最近5件
+========================= */
+
+function renderRecent(){
+
+    const area =
+    document.getElementById(
+        "recentList"
+    );
+
+    const latest =
+    [...records]
+    .sort(
+        (a,b)=>
+        b.id-a.id
+    )
+    .slice(0,5);
+
+    area.innerHTML =
+    latest.map(r=>`
+
+        <div style="
+            padding:6px;
+            border-bottom:1px solid #333;
+        ">
+
+        ${r.date}
+
+        <br>
+
+        ${r.machine}
+
+        <br>
+
+        ${r.profit.toLocaleString()}円
+
+        </div>
+
+    `).join("");
+
+}
+
+
+/* =========================
+   一覧描画
+========================= */
+
+function renderList(){
+
+    const tbody =
+    document.getElementById(
+        "recordTable"
+    );
+
+    let running = 0;
+
+    const ascRecords =
+    [...records]
+    .sort(
+        (a,b)=>
+        new Date(a.date)
+        -
+        new Date(b.date)
+    );
+
+    const cumulativeMap =
+    {};
+
+    ascRecords.forEach(r=>{
+
+        running += r.profit;
+
+        cumulativeMap[r.id]
+        = running;
+
+    });
+
+
+    const displayRecords =
+    [...records]
+    .sort(
+        (a,b)=>
+        new Date(b.date)
+        -
+        new Date(a.date)
+    );
+
+
+    tbody.innerHTML =
+    displayRecords.map(r=>`
+
+        <tr
+        data-id="${r.id}">
+
+            <td>${r.date}</td>
+
+            <td>${r.shop}</td>
+
+            <td>${r.machine}</td>
+
+            <td>
+            ${r.profit.toLocaleString()}
+            </td>
+
+            <td>
+            ${cumulativeMap[r.id]
+            .toLocaleString()}
+            </td>
+
+        </tr>
+
+    `).join("");
+
+
+    tbody
+    .querySelectorAll("tr")
+    .forEach(row=>{
+
+        row.addEventListener(
+            "click",
+            ()=>{
+
+                openDetail(
+                    Number(
+                        row.dataset.id
+                    )
+                );
+
+            }
+        );
+
+    });
+
+}
+
+
+/* =========================
+   全体描画
+========================= */
+
+function renderAll(){
+
+    renderHome();
+
+    renderList();
+
+    renderAnalysis();
+
+}
+
+
+/* =========================
+   初期描画
+========================= */
+
+renderAll();
+
+<!--Phase1 Part3-->
+
+/* =========================
+   詳細表示
+========================= */
+
+function openDetail(id){
+
+    selectedId = id;
+
+    const record =
+    records.find(
+        r => r.id === id
+    );
+
+    if(!record){
+        return;
+    }
+
+    document
+    .getElementById("detailArea")
+    .innerHTML = `
+
+        <p><b>日付</b><br>
+        ${record.date}</p>
+
+        <br>
+
+        <p><b>店舗</b><br>
+        ${record.shop}</p>
+
+        <br>
+
+        <p><b>機種</b><br>
+        ${record.machine}</p>
+
+        <br>
+
+        <p><b>投資</b><br>
+        ${record.investment.toLocaleString()}円</p>
+
+        <br>
+
+        <p><b>回収</b><br>
+        ${record.collection.toLocaleString()}円</p>
+
+        <br>
+
+        <p><b>収支</b><br>
+        ${record.profit.toLocaleString()}円</p>
+
+        <br>
+
+        <p><b>メモ</b><br>
+        ${record.memo || ""}</p>
+
+    `;
+
+    showPage("detailPage");
+
+}
+
+
+/* =========================
+   編集
+========================= */
+
+document
+.getElementById("editBtn")
+.addEventListener(
+    "click",
+    editRecord
+);
+
+function editRecord(){
+
+    const record =
+    records.find(
+        r => r.id === selectedId
+    );
+
+    if(!record){
+        return;
+    }
+
+    editingId =
+    record.id;
+
+    document
+    .getElementById("date")
+    .value =
+    record.date;
+
+    document
+    .getElementById("shop")
+    .value =
+    record.shop;
+
+    document
+    .getElementById("machine")
+    .value =
+    record.machine;
+
+    document
+    .getElementById("investment")
+    .value =
+    record.investment;
+
+    document
+    .getElementById("collection")
+    .value =
+    record.collection;
+
+    document
+    .getElementById("memo")
+    .value =
+    record.memo;
+
+    showPage(
+        "registerPage"
+    );
+
+}
+
+
+/* =========================
+   削除モーダル表示
+========================= */
+
+document
+.getElementById("deleteBtn")
+.addEventListener(
+    "click",
+    ()=>{
+        document
+        .getElementById(
+            "deleteModal"
+        )
+        .style.display =
+        "flex";
+    }
+);
+
+
+/* =========================
+   削除モーダル閉じる
+========================= */
+
+document
+.getElementById("cancelDelete")
+.addEventListener(
+    "click",
+    ()=>{
+
+        document
+        .getElementById(
+            "deleteModal"
+        )
+        .style.display =
+        "none";
+
+    }
+);
+
+
+/* =========================
+   削除実行
+========================= */
+
+document
+.getElementById("confirmDelete")
+.addEventListener(
+    "click",
+    deleteRecord
+);
+
+function deleteRecord(){
+
+    records =
+    records.filter(
+        r => r.id !== selectedId
+    );
+
+    saveStorage();
+
+    document
+    .getElementById(
+        "deleteModal"
+    )
+    .style.display =
+    "none";
+
+    renderAll();
+
+    showPage(
+        "listPage"
+    );
+
+}
+
+
+/* =========================
+   モーダル外クリック
+========================= */
+
+document
+.getElementById("deleteModal")
+.addEventListener(
+    "click",
+    (e)=>{
+
+        if(
+            e.target.id
+            ===
+            "deleteModal"
+        ){
+
+            document
+            .getElementById(
+                "deleteModal"
+            )
+            .style.display =
+            "none";
+
+        }
+
+    }
+);
+
+
+/* =========================
+   起動時再描画
+========================= */
+
+renderAll();
+
+
+/* =========================
+   設定データ
+========================= */
+
+const SHOP_KEY =
+"ver6_shops";
+
+const MACHINE_KEY =
+"ver6_machines";
+
+let shops =
+JSON.parse(
+localStorage.getItem(SHOP_KEY)
+||
+'["未設定"]'
+);
+
+let machines =
+JSON.parse(
+localStorage.getItem(MACHINE_KEY)
+||
+'["未設定"]'
+);
+
+
+/* =========================
+   設定保存
+========================= */
+
+function saveSettings(){
+
+    localStorage.setItem(
+        SHOP_KEY,
+        JSON.stringify(shops)
+    );
+
+    localStorage.setItem(
+        MACHINE_KEY,
+        JSON.stringify(machines)
+    );
+
+}
+
+
+/* =========================
+   プルダウン更新
+========================= */
+
+function renderSelects(){
+
+    document
+    .getElementById("shop")
+    .innerHTML =
+    shops.map(shop=>`
+
+        <option>
+        ${shop}
+        </option>
+
+    `).join("");
+
+
+    document
+    .getElementById("machine")
+    .innerHTML =
+    machines.map(machine=>`
+
+        <option>
+        ${machine}
+        </option>
+
+    `).join("");
+
+}
+
+
+/* =========================
+   設定画面描画
+========================= */
+
+function renderSettings(){
+
+    document
+    .getElementById("shopList")
+    .innerHTML =
+    shops.map((shop,index)=>`
+
+        <div
+        style="
+        display:flex;
+        justify-content:space-between;
+        margin-top:6px;
+        ">
+
+        <span>${shop}</span>
+
+        <button
+        onclick="deleteShop(${index})"
+        style="width:80px">
+
+        削除
+
+        </button>
+
+        </div>
+
+    `).join("");
+
+
+    document
+    .getElementById("machineList")
+    .innerHTML =
+    machines.map((machine,index)=>`
+
+        <div
+        style="
+        display:flex;
+        justify-content:space-between;
+        margin-top:6px;
+        ">
+
+        <span>${machine}</span>
+
+        <button
+        onclick="deleteMachine(${index})"
+        style="width:80px">
+
+        削除
+
+        </button>
+
+        </div>
+
+    `).join("");
+
+}
+
+
+/* =========================
+   店舗追加
+========================= */
+
+document
+.getElementById("addShopBtn")
+.addEventListener(
+"click",
+()=>{
+
+    const value =
+    document
+    .getElementById("newShop")
+    .value
+    .trim();
+
+    if(!value) return;
+
+    shops.push(value);
+
+    saveSettings();
+
+    renderSettings();
+
+    renderSelects();
+
+    document
+    .getElementById("newShop")
+    .value = "";
+
+}
+);
+
+
+/* =========================
+   機種追加
+========================= */
+
+document
+.getElementById("addMachineBtn")
+.addEventListener(
+"click",
+()=>{
+
+    const value =
+    document
+    .getElementById("newMachine")
+    .value
+    .trim();
+
+    if(!value) return;
+
+    machines.push(value);
+
+    saveSettings();
+
+    renderSettings();
+
+    renderSelects();
+
+    document
+    .getElementById("newMachine")
+    .value = "";
+
+}
+);
+
+
+/* =========================
+   店舗削除
+========================= */
+
+function deleteShop(index){
+
+    shops.splice(index,1);
+
+    if(shops.length===0){
+
+        shops.push("未設定");
+
+    }
+
+    saveSettings();
+
+    renderSettings();
+
+    renderSelects();
+
+}
+
+
+/* =========================
+   機種削除
+========================= */
+
+function deleteMachine(index){
+
+    machines.splice(index,1);
+
+    if(machines.length===0){
+
+        machines.push("未設定");
+
+    }
+
+    saveSettings();
+
+    renderSettings();
+
+    renderSelects();
+
+}
+
+
+/* =========================
+   起動時
+========================= */
+
+renderSettings();
+
+renderSelects();
+
+/* =========================
+   基本分析
+========================= */
+
+function renderAnalysis(){
+
+    /* データなしの場合 */
+
+    if(records.length === 0){
+
+        document.getElementById(
+            "analysisTotalProfit"
+        ).textContent = "0円";
+
+        document.getElementById(
+            "analysisMonthProfit"
+        ).textContent = "0円";
+
+        document.getElementById(
+            "analysisPlayCount"
+        ).textContent = "0回";
+
+        document.getElementById(
+            "analysisWinRate"
+        ).textContent = "0%";
+
+        document.getElementById(
+            "analysisAverageProfit"
+        ).textContent = "0円";
+
+        document.getElementById(
+            "analysisMaxWin"
+        ).textContent = "0円";
+
+        document.getElementById(
+            "analysisMaxLose"
+        ).textContent = "0円";
+
+        return;
+
+    }
+
+
+    /* 総収支 */
+
+    const totalProfit =
+    records.reduce(
+        (sum,r)=>sum+r.profit,
+        0
+    );
+
+
+    /* 今月収支 */
+
+    const now = new Date();
+
+    const currentMonth =
+        now.getFullYear()
+        + "-"
+        + String(
+            now.getMonth()+1
+        ).padStart(2,"0");
+
+
+    const monthProfit =
+    records
+    .filter(
+        r=>r.date.startsWith(
+            currentMonth
+        )
+    )
+    .reduce(
+        (sum,r)=>sum+r.profit,
+        0
+    );
+
+
+    /* 実戦回数 */
+
+    const playCount =
+    records.length;
+
+
+    /* 勝率 */
+
+    const winCount =
+    records.filter(
+        r=>r.profit > 0
+    ).length;
+
+
+    const winRate =
+    (winCount / playCount)
+    * 100;
+
+
+    /* 平均収支 */
+
+    const averageProfit =
+    totalProfit / playCount;
+
+
+    /* 最大勝ち */
+
+    const maxWin =
+    Math.max(
+        ...records.map(
+            r=>r.profit
+        )
+    );
+
+
+    /* 最大負け */
+
+    const maxLose =
+    Math.min(
+        ...records.map(
+            r=>r.profit
+        )
+    );
+
+
+    /* 表示 */
+
+    document.getElementById(
+        "analysisTotalProfit"
+    ).textContent =
+    totalProfit.toLocaleString()
+    + "円";
+
+
+    document.getElementById(
+        "analysisMonthProfit"
+    ).textContent =
+    monthProfit.toLocaleString()
+    + "円";
+
+
+    document.getElementById(
+        "analysisPlayCount"
+    ).textContent =
+    playCount
+    + "回";
+
+
+    document.getElementById(
+        "analysisWinRate"
+    ).textContent =
+    winRate.toFixed(1)
+    + "%";
+
+
+    document.getElementById(
+        "analysisAverageProfit"
+    ).textContent =
+    averageProfit.toLocaleString(
+        undefined,
+        {
+            maximumFractionDigits:0
+        }
+    )
+    + "円";
+
+
+    document.getElementById(
+        "analysisMaxWin"
+    ).textContent =
+    maxWin.toLocaleString()
+    + "円";
+
+
+    document.getElementById(
+        "analysisMaxLose"
+    ).textContent =
+    maxLose.toLocaleString()
+    + "円";
+
+/* =========================
+   店舗別分析
+========================= */
+
+const shopSummary = {};
+
+records.forEach(record=>{
+
+    if(!shopSummary[record.shop]){
+
+        shopSummary[record.shop] = {
+
+            profit: 0,
+            count: 0
+
+        };
+
+    }
+
+    shopSummary[record.shop].profit += record.profit;
+
+    shopSummary[record.shop].count++;
+
+});
+
+
+const shopRanking =
+Object.entries(shopSummary)
+
+.sort(
+    (a,b)=>
+    b[1].profit - a[1].profit
+);
+
+
+document.getElementById(
+    "shopAnalysis"
+).innerHTML =
+
+shopRanking.length === 0
+
+? "データなし"
+
+: shopRanking.map(([shop,data],index)=>`
+
+    <div style="
+        padding:8px 0;
+        border-bottom:1px solid #333;
+    ">
+
+        ${index + 1}位
+
+        ${shop}
+
+        <br>
+
+        収支：
+        ${data.profit.toLocaleString()}円
+
+        （${data.count}回）
+
+    </div>
+
+`).join("");
+
+
+
+/* =========================
+   機種別分析
+========================= */
+
+const machineSummary = {};
+
+records.forEach(record=>{
+
+    if(!machineSummary[record.machine]){
+
+        machineSummary[record.machine] = {
+
+            profit: 0,
+            count: 0
+
+        };
+
+    }
+
+    machineSummary[record.machine].profit += record.profit;
+
+    machineSummary[record.machine].count++;
+
+});
+
+
+const machineRanking =
+Object.entries(machineSummary)
+
+.sort(
+    (a,b)=>
+    b[1].profit - a[1].profit
+);
+
+
+document.getElementById(
+    "machineAnalysis"
+).innerHTML =
+
+machineRanking.length === 0
+
+? "データなし"
+
+: machineRanking.map(([machine,data],index)=>`
+
+    <div style="
+        padding:8px 0;
+        border-bottom:1px solid #333;
+    ">
+
+        ${index + 1}位
+
+        ${machine}
+
+        <br>
+
+        収支：
+        ${data.profit.toLocaleString()}円
+
+        （${data.count}回）
+
+    </div>
+
+`).join("");
+
+}
+
+/* =========================
+   JSONバックアップ
+========================= */
+
+document
+.getElementById("backupBtn")
+.addEventListener(
+    "click",
+    backupJson
+);
+
+function backupJson(){
+
+    const backupData = {
+
+        records: records,
+
+        shops: shops,
+
+        machines: machines
+
+    };
+
+
+    const jsonString =
+    JSON.stringify(
+        backupData,
+        null,
+        2
+    );
+
+
+    const blob =
+    new Blob(
+        [jsonString],
+        {
+            type:
+            "application/json"
+        }
+    );
+
+
+    const url =
+    URL.createObjectURL(
+        blob
+    );
+
+
+    const today =
+    new Date();
+
+
+    const fileName =
+
+        "Ver6Pro_Backup_"
+
+        +
+
+        today.getFullYear()
+
+        + "-"
+
+        +
+
+        String(
+            today.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        )
+
+        + "-"
+
+        +
+
+        String(
+            today.getDate()
+        ).padStart(
+            2,
+            "0"
+        )
+
+        +
+
+        ".json";
+
+
+    const a =
+    document.createElement(
+        "a"
+    );
+
+    a.href = url;
+
+    a.download =
+    fileName;
+
+
+    document.body
+    .appendChild(a);
+
+    a.click();
+
+    document.body
+    .removeChild(a);
+
+
+    URL.revokeObjectURL(
+        url
+    );
+
+}
+
+/* =========================
+   JSON復元
+========================= */
+
+document
+.getElementById("restoreBtn")
+.addEventListener(
+    "click",
+    restoreJson
+);
+
+function restoreJson(){
+
+    const file =
+    document
+    .getElementById(
+        "restoreFile"
+    )
+    .files[0];
+
+
+    if(!file){
+
+        alert(
+            "復元するJSONファイルを選択してください。"
+        );
+
+        return;
+
+    }
+
+
+    const reader =
+    new FileReader();
+
+
+    reader.onload =
+    function(event){
+
+        try{
+
+            const backupData =
+            JSON.parse(
+                event.target.result
+            );
+
+
+            if(
+                !Array.isArray(
+                    backupData.records
+                )
+            ){
+
+                throw new Error(
+                    "不正なバックアップファイルです。"
+                );
+
+            }
+
+
+            const confirmed =
+            window.confirm(
+
+                "現在のデータを上書きして復元します。\n\n"
+
+                +
+
+                "この操作は元に戻せません。\n"
+
+                +
+
+                "続行しますか？"
+
+            );
+
+
+            if(!confirmed){
+
+                return;
+
+            }
+
+
+            /* LocalStorageへ保存 */
+
+            localStorage.setItem(
+
+                STORAGE_KEY,
+
+                JSON.stringify(
+                    backupData.records || []
+                )
+
+            );
+
+
+            localStorage.setItem(
+
+                SHOP_KEY,
+
+                JSON.stringify(
+                    backupData.shops || []
+                )
+
+            );
+
+
+            localStorage.setItem(
+
+                MACHINE_KEY,
+
+                JSON.stringify(
+                    backupData.machines || []
+                )
+
+            );
+
+
+            /* メモリへ反映 */
+
+            records =
+            backupData.records || [];
+
+            shops =
+            backupData.shops || [];
+
+            machines =
+            backupData.machines || [];
+
+
+            /* 再描画 */
+
+            renderSettings();
+
+            renderSelects();
+
+            renderAll();
+
+
+            /* ファイル選択解除 */
+
+            document
+            .getElementById(
+                "restoreFile"
+            )
+            .value = "";
+
+
+            alert(
+                "復元が完了しました。"
+            );
+
+        }
+
+        catch(error){
+
+            alert(
+
+                "JSONの読み込みに失敗しました。\n"
+
+                +
+
+                "バックアップファイルを確認してください。"
+
+            );
+
+        }
+
+    };
+
+
+    reader.readAsText(
+        file
+    );
+
+}
+
+
+/* =========================
+   Service Worker登録
+========================= */
+
+if(
+    "serviceWorker"
+    in navigator
+){
+
+    window.addEventListener(
+
+        "load",
+
+        () => {
+
+            navigator.serviceWorker
+
+            .register(
+                "./service-worker.js"
+            )
+
+            .then(() => {
+
+                console.log(
+                    "Service Worker登録成功"
+                );
+
+            })
+
+            .catch(error => {
+
+                console.log(
+                    "Service Worker登録失敗",
+                    error
+                );
+
+            });
+
+        }
+
+    );
+
+}
+
+</script>
+
+</body>
+</html>
