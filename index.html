@@ -189,6 +189,23 @@ td{
 
 }
 
+.amount-buttons{
+    display:flex;
+    gap:8px;
+    margin-top:8px;
+}
+
+.amount-buttons button{
+    flex:1;
+    margin-top:0;
+    padding:10px;
+    font-size:14px;
+}
+
+#startGame{
+    width:100%;
+}
+
 </style>
 
 </head>
@@ -439,10 +456,53 @@ type="number"
 id="investment"
 placeholder="投資">
 
+<div class="amount-buttons">
+    <button type="button" class="amount-btn" data-target="investment" data-value="0">
+        C
+    </button>
+
+    <button type="button" class="amount-btn" data-target="investment" data-value="10000">
+        +10K
+    </button>
+
+    <button type="button" class="amount-btn" data-target="investment" data-value="5000">
+        +5K
+    </button>
+
+    <button type="button" class="amount-btn" data-target="investment" data-value="1000">
+        +1K
+    </button>
+</div>
+
+
 <input
 type="number"
 id="collection"
 placeholder="回収">
+
+<div class="amount-buttons">
+    <button type="button" class="amount-btn" data-target="collection" data-value="0">
+        C
+    </button>
+
+    <button type="button" class="amount-btn" data-target="collection" data-value="10000">
+        +10K
+    </button>
+
+    <button type="button" class="amount-btn" data-target="collection" data-value="5000">
+        +5K
+    </button>
+
+    <button type="button" class="amount-btn" data-target="collection" data-value="1000">
+        +1K
+    </button>
+</div>
+
+
+<input
+type="number"
+id="startGame"
+placeholder="打ち始めG">
 
 <textarea
 id="memo"
@@ -522,6 +582,7 @@ id="deleteModal">
 </button>
 
 </div>
+
 
 <script>
 
@@ -611,6 +672,11 @@ function saveRecord(){
             document.getElementById("collection").value
         ) || 0,
 
+        startGame:
+        Number(
+            document.getElementById("startGame").value
+        ) || "",
+
         memo:
         document.getElementById("memo").value,
 
@@ -659,19 +725,63 @@ function saveRecord(){
 
 function clearForm(){
 
-    document.getElementById("date").value = "";
+    document.getElementById("date").value =
+    new Date().toISOString().split("T")[0];
 
-    document.getElementById("shop").value = "";
+    /* 店舗は維持 */
 
-    document.getElementById("machine").value = "";
+    /* 機種は維持 */
 
     document.getElementById("investment").value = "";
 
     document.getElementById("collection").value = "";
 
+    document.getElementById("startGame").value = "";
+
     document.getElementById("memo").value = "";
 
 }
+
+
+/* =========================
+   投資・回収入力補助ボタン
+========================= */
+
+document
+.querySelectorAll(".amount-btn")
+.forEach(btn=>{
+
+    btn.addEventListener("click",()=>{
+
+        const targetId =
+        btn.dataset.target;
+
+        const value =
+        Number(btn.dataset.value);
+
+        const input =
+        document.getElementById(targetId);
+
+        if(!input) return;
+
+        /* Cボタン */
+        if(value === 0){
+
+            input.value = "";
+
+            return;
+
+        }
+
+        const current =
+        Number(input.value) || 0;
+
+        input.value =
+        current + value;
+
+    });
+
+});
 
 
 /* =========================
@@ -972,6 +1082,11 @@ function openDetail(id){
 
         <br>
 
+        <p><b>打ち始めG</b><br>
+        ${record.startGame || "-"}</p>
+
+        <br>
+
         <p><b>メモ</b><br>
         ${record.memo || ""}</p>
 
@@ -1031,6 +1146,11 @@ function editRecord(){
     .getElementById("collection")
     .value =
     record.collection;
+
+    document
+    .getElementById("startGame")
+    .value =
+    record.startGame || "";
 
     document
     .getElementById("memo")
