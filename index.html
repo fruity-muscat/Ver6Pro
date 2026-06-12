@@ -206,7 +206,84 @@ td{
     width:100%;
 }
 
+.register-header{
+    margin-bottom:12px;
+}
+
+.register-header h2{
+    margin-top:8px;
+}
+
+.small-delete-btn{
+    width:auto !important;
+
+    display:inline-block;
+
+    padding:4px 8px;
+
+    margin-top:0;
+
+    font-size:12px;
+
+    background:#2a2a2a;
+
+    border:1px solid #555;
+
+    border-radius:6px;
+
+    flex:none;
+}
+
+.small-delete-btn:hover{
+    opacity:0.9;
+}
+
+/* =========================
+   一覧フィルター
+========================= */
+
+.list-filter{
+
+    display:flex;
+
+    gap:6px;
+
+    margin-bottom:10px;
+
+    align-items:center;
+
+}
+
+.list-filter select{
+
+    flex:1;
+
+    margin-top:0;
+
+    padding:6px;
+
+    font-size:12px;
+
+}
+
+#clearFilterBtn{
+
+    width:auto;
+
+    flex:none;
+
+    margin-top:0;
+
+    padding:6px 10px;
+
+    font-size:12px;
+
+    white-space:nowrap;
+
+}
+
 </style>
+
 
 </head>
 <body>
@@ -418,6 +495,44 @@ color:#bbbbbb;
 
 <h2>一覧</h2>
 
+<!-- LIST FILTER -->
+
+<div class="list-filter">
+
+    <select id="dateFilter">
+
+        <option value="">
+            日付：全て
+        </option>
+
+    </select>
+
+    <select id="shopFilter">
+
+        <option value="">
+            店舗：全て
+        </option>
+
+    </select>
+
+    <select id="machineFilter">
+
+        <option value="">
+            機種：全て
+        </option>
+
+    </select>
+
+    <button
+    id="clearFilterBtn"
+    type="button">
+
+        解除
+
+    </button>
+
+</div>
+
 <table>
 
 <thead>
@@ -441,7 +556,21 @@ color:#bbbbbb;
 
 <div id="registerPage" class="page">
 
-<h2>登録</h2>
+<div class="register-header">
+
+    <button
+    id="editDeleteBtn"
+    class="small-delete-btn"
+    style="display:none;"
+    type="button">
+
+        🗑 削除
+
+    </button>
+
+    <h2>登録</h2>
+
+</div>
 
 <input type="date" id="date">
 
@@ -529,10 +658,6 @@ id="detailArea">
 編集
 </button>
 
-<button id="deleteBtn">
-削除
-</button>
-
 </div>
 
 <!-- DELETE MODAL -->
@@ -596,6 +721,20 @@ localStorage.getItem(STORAGE_KEY)
 
 let editingId = null;
 let selectedId = null;
+
+/* =========================
+   一覧フィルター状態
+========================= */
+
+let listFilters = {
+
+    date: "",
+
+    shop: "",
+
+    machine: ""
+
+};
 
 function saveStorage(){
 
@@ -739,6 +878,10 @@ function clearForm(){
     document.getElementById("startGame").value = "";
 
     document.getElementById("memo").value = "";
+    
+    document
+    .getElementById("editDeleteBtn")
+    .style.display = "none";
 
 }
 
@@ -914,50 +1057,153 @@ function renderList(){
         "recordTable"
     );
 
-    let running = 0;
 
-    const ascRecords =
-    [...records]
-    .sort(
-        (a,b)=>
-        new Date(a.date)
-        -
-        new Date(b.date)
+/* =========================
+   フィルター適用
+========================= */
+
+let filteredRecords =
+[...records];
+
+
+/* 日付 */
+
+if(listFilters.date){
+
+    if(
+        listFilters.date
+        ===
+        "today"
+    ){
+
+        const now = new Date();
+
+        const today =
+
+            now.getFullYear()
+
+            + "-"
+
+            + String(
+                now.getMonth() + 1
+            ).padStart(2,"0")
+
+            + "-"
+
+            + String(
+                now.getDate()
+            ).padStart(2,"0");
+
+        filteredRecords =
+        filteredRecords.filter(
+            r => r.date === today
+        );
+
+    }else{
+
+        filteredRecords =
+        filteredRecords.filter(
+            r =>
+            r.date.startsWith(
+                listFilters.date
+            )
+        );
+
+    }
+
+}
+
+
+/* 店舗 */
+
+if(listFilters.shop){
+
+    filteredRecords =
+    filteredRecords.filter(
+        r =>
+        r.shop ===
+        listFilters.shop
     );
 
-    const cumulativeMap =
-    {};
-
-    ascRecords.forEach(r=>{
-
-        running += r.profit;
-
-        cumulativeMap[r.id]
-        = running;
-
-    });
+}
 
 
-    const displayRecords =
-    [...records]
-    .sort((a,b)=>{
+/* 機種 */
 
-        const dateCompare =
+if(listFilters.machine){
+
+    filteredRecords =
+    filteredRecords.filter(
+        r =>
+        r.machine ===
+        listFilters.machine
+    );
+
+}
+
+
+/* =========================
+   累計再計算
+========================= */
+
+let running = 0;
+
+const cumulativeMap =
+{};
+
+const ascRecords =
+[...filteredRecords]
+.sort(
+    (a,b)=>
+
+    new Date(a.date)
+    -
+    new Date(b.date)
+
+);
+
+ascRecords.forEach(r=>{
+
+    running += r.profit;
+
+    cumulativeMap[r.id]
+    =
+    running;
+
+});
+
+
+/* =========================
+   一覧表示
+========================= */
+
+const displayRecords =
+[...filteredRecords]
+.sort(
+    (a,b)=>{
+
+        const dateDiff =
+
             new Date(b.date)
             -
             new Date(a.date);
 
-        if(dateCompare !== 0){
+        if(dateDiff !== 0){
 
-            return dateCompare;
+            return dateDiff;
 
         }
 
-        return (b.createdAt || 0)
-             -
-               (a.createdAt || 0);
+        return (
+            b.createdAt || 0
+        )
+        -
+        (
+            a.createdAt || 0
+        );
 
-    });
+    }
+);
 
 
     tbody.innerHTML =
@@ -1009,12 +1255,229 @@ function renderList(){
 
 
 /* =========================
+   フィルター選択肢生成
+========================= */
+
+function renderFilters(){
+
+    const dateFilter =
+    document.getElementById(
+        "dateFilter"
+    );
+
+    const shopFilter =
+    document.getElementById(
+        "shopFilter"
+    );
+
+    const machineFilter =
+    document.getElementById(
+        "machineFilter"
+    );
+
+
+    /* 日付 */
+
+    const months = [
+
+        ...new Set(
+
+            records
+            .map(
+                r => r.date.slice(0,7)
+            )
+
+        )
+
+    ]
+    .sort()
+    .reverse();
+
+
+    dateFilter.innerHTML =
+
+        `<option value="">
+            日付：全て
+        </option>
+
+        <option value="today">
+            今日
+        </option>`
+
+        +
+
+        months.map(
+            month =>
+
+            `<option value="${month}">
+                ${month}
+            </option>`
+
+        )
+        .join("");
+
+
+    /* 店舗 */
+
+    shopFilter.innerHTML =
+
+        `<option value="">
+            店舗：全て
+        </option>`
+
+        +
+
+        [...new Set(
+            records.map(r => r.shop)
+        )]
+        .filter(Boolean)
+        .sort()
+        .map(
+            shop =>
+
+            `<option value="${shop}">
+                ${shop}
+            </option>`
+
+        )
+        .join("");
+
+
+    /* 機種 */
+
+    machineFilter.innerHTML =
+
+        `<option value="">
+            機種：全て
+        </option>`
+
+        +
+
+        [...new Set(
+            records.map(r => r.machine)
+        )]
+        .filter(Boolean)
+        .sort()
+        .map(
+            machine =>
+
+            `<option value="${machine}">
+                ${machine}
+            </option>`
+
+        )
+        .join("");
+
+
+    /* 状態復元 */
+
+    dateFilter.value =
+    listFilters.date;
+
+    shopFilter.value =
+    listFilters.shop;
+
+    machineFilter.value =
+    listFilters.machine;
+
+}
+
+
+/* =========================
+   フィルター変更
+========================= */
+
+document
+.getElementById("dateFilter")
+.addEventListener(
+    "change",
+    ()=>{
+
+        listFilters.date =
+
+        document
+        .getElementById("dateFilter")
+        .value;
+
+        renderList();
+
+    }
+);
+
+
+document
+.getElementById("shopFilter")
+.addEventListener(
+    "change",
+    ()=>{
+
+        listFilters.shop =
+
+        document
+        .getElementById("shopFilter")
+        .value;
+
+        renderList();
+
+    }
+);
+
+
+document
+.getElementById("machineFilter")
+.addEventListener(
+    "change",
+    ()=>{
+
+        listFilters.machine =
+
+        document
+        .getElementById("machineFilter")
+        .value;
+
+        renderList();
+
+    }
+);
+
+
+/* =========================
+   フィルター解除
+========================= */
+
+document
+.getElementById("clearFilterBtn")
+.addEventListener(
+    "click",
+    ()=>{
+
+        listFilters = {
+
+            date: "",
+
+            shop: "",
+
+            machine: ""
+
+        };
+
+        renderFilters();
+
+        renderList();
+
+    }
+);
+
+
+/* =========================
    全体描画
 ========================= */
 
 function renderAll(){
 
     renderHome();
+
+    renderFilters();
 
     renderList();
 
@@ -1157,6 +1620,10 @@ function editRecord(){
     .value =
     record.memo;
 
+    document
+    .getElementById("editDeleteBtn")
+    .style.display = "block";
+
     showPage(
         "registerPage"
     );
@@ -1165,20 +1632,20 @@ function editRecord(){
 
 
 /* =========================
-   削除モーダル表示
+   編集画面 削除ボタン
 ========================= */
 
 document
-.getElementById("deleteBtn")
+.getElementById("editDeleteBtn")
 .addEventListener(
     "click",
     ()=>{
+
         document
-        .getElementById(
-            "deleteModal"
-        )
+        .getElementById("deleteModal")
         .style.display =
         "flex";
+
     }
 );
 
@@ -1212,32 +1679,36 @@ document
 .getElementById("confirmDelete")
 .addEventListener(
     "click",
-    deleteRecord
+    ()=>{
+
+        if(editingId == null){
+            return;
+        }
+
+        records =
+        records.filter(
+            r => r.id !== editingId
+        );
+
+        saveStorage();
+
+        editingId = null;
+
+        selectedId = null;
+
+        clearForm();
+
+        renderAll();
+
+        document
+        .getElementById("deleteModal")
+        .style.display =
+        "none";
+
+        showPage("listPage");
+
+    }
 );
-
-function deleteRecord(){
-
-    records =
-    records.filter(
-        r => r.id !== selectedId
-    );
-
-    saveStorage();
-
-    document
-    .getElementById(
-        "deleteModal"
-    )
-    .style.display =
-    "none";
-
-    renderAll();
-
-    showPage(
-        "listPage"
-    );
-
-}
 
 
 /* =========================
