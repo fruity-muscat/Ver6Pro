@@ -345,8 +345,109 @@ td{
 
 }
 
+/* =========================
+   グラフ画面
+========================= */
+
+.analysis-header,
+.graph-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:16px;
+
+}
+
+
+.graph-btn,
+.back-btn{
+
+    width:auto;
+
+    min-width:80px;
+
+    padding:6px 12px;
+
+    border:none;
+
+    border-radius:8px;
+
+    font-size:14px;
+
+    cursor:pointer;
+
+    flex-shrink:0;
+
+}
+
+
+.analysis-header h2,
+.graph-header h2{
+
+    margin:0;
+
+}
+
+.analysis-header h2{
+
+    white-space:nowrap;
+
+}
+
+.graph-filter{
+
+    display:flex;
+
+    gap:16px;
+
+    margin:16px 0;
+
+}
+
+
+.graph-filter label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:4px;
+
+}
+
+
+#graphContainer{
+
+    min-height:300px;
+
+    border:1px solid #444;
+
+    border-radius:12px;
+
+    padding:16px;
+
+    margin-bottom:16px;
+
+}
+
+
+#graphSummary{
+
+    border:1px solid #444;
+
+    border-radius:12px;
+
+    padding:16px;
+
+}
+
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 <body>
@@ -466,7 +567,20 @@ color:#bbbbbb;
 
 <div id="analysisPage" class="page">
 
-    <h2>分析</h2>
+    <div class="analysis-header">
+
+        <h2>分析</h2>
+
+        <button
+            id="openGraphBtn"
+            class="graph-btn"
+            type="button">
+
+            グラフ
+
+        </button>
+
+    </div>
 
     <!-- 分析対象月 -->
     <div class="analysis-filter">
@@ -653,6 +767,62 @@ color:#bbbbbb;
         </tbody>
 
     </table>
+
+</div>
+
+
+<!-- GRAPH -->
+
+<div
+    id="graphPage"
+    class="page">
+
+    <div class="graph-header">
+
+        <h2>グラフ</h2>
+
+    </div>
+
+
+    <div class="graph-filter">
+
+        <label>
+
+            年：
+
+            <select id="graphYearFilter">
+
+            </select>
+
+        </label>
+
+
+        <label>
+
+            月：
+
+            <select id="graphMonthFilter">
+
+            </select>
+
+        </label>
+
+    </div>
+
+
+    <div id="graphContainer">
+
+        <canvas id="profitChart"></canvas>
+
+    </div>
+
+
+    <div
+        id="graphSummary">
+
+        （最高・最低収支表示エリア）
+
+    </div>
 
 </div>
 
@@ -949,6 +1119,25 @@ btn.dataset.page
 });
 
 });
+
+/* =========================
+   グラフフィルタ状態
+========================= */
+
+let graphFilters = {
+
+    year : "",
+
+    month : ""
+
+};
+
+/* =========================
+   グラフインスタンス
+========================= */
+
+let profitChart = null;
+
 
 <!--Phase1 Part2-->
 
@@ -1659,6 +1848,10 @@ function renderAll(){
     renderAnalysisMonth();
 
     renderAnalysis();
+
+    renderGraphFilters();
+
+    renderGraph();
 
 }
 
@@ -2834,6 +3027,599 @@ document
 );
 
 /* =========================
+   グラフフィルタ生成
+========================= */
+
+function renderGraphFilters(){
+
+    const yearFilter =
+
+        document.getElementById(
+            "graphYearFilter"
+        );
+
+    const monthFilter =
+
+        document.getElementById(
+            "graphMonthFilter"
+        );
+
+
+    if(records.length === 0){
+
+        yearFilter.innerHTML = "";
+
+        monthFilter.innerHTML = "";
+
+        return;
+
+    }
+
+
+    /* 最新実戦日 */
+
+    const latestRecord =
+
+        [...records]
+
+        .sort(
+            (a,b)=>
+
+            new Date(b.date)
+
+            -
+
+            new Date(a.date)
+
+        )[0];
+
+
+    const latestYear =
+
+        latestRecord.date.slice(0,4);
+
+    const latestMonth =
+
+        latestRecord.date.slice(5,7);
+
+
+    /* 初回設定 */
+
+    if(graphFilters.year === ""){
+
+        graphFilters.year = latestYear;
+
+    }
+
+    if(graphFilters.month === ""){
+
+        graphFilters.month = latestMonth;
+
+    }
+
+
+    /* 年一覧 */
+
+    const years =
+
+        [...new Set(
+
+            records.map(
+                r=>r.date.slice(0,4)
+            )
+
+        )]
+
+        .sort()
+
+        .reverse();
+
+
+    yearFilter.innerHTML =
+
+        years.map(
+            year=>
+
+            `<option value="${year}">
+
+                ${year}
+
+            </option>`
+
+        )
+
+        .join("");
+
+
+    yearFilter.value =
+
+        graphFilters.year;
+
+
+    /* 月一覧 */
+
+    const months =
+
+        [...new Set(
+
+            records
+
+            .filter(
+                r=>
+
+                r.date.startsWith(
+                    graphFilters.year
+                )
+            )
+
+            .map(
+                r=>r.date.slice(5,7)
+            )
+
+        )]
+
+        .sort()
+
+        .reverse();
+
+
+    monthFilter.innerHTML =
+
+        months.map(
+            month=>
+
+            `<option value="${month}">
+
+                ${month}
+
+            </option>`
+
+        )
+
+        .join("")
+
+        +
+
+        `<option value="">
+
+            ―
+
+        </option>`;
+
+
+    monthFilter.value =
+
+        graphFilters.month;
+
+}
+
+/* =========================
+   グラフ 年変更
+========================= */
+
+document
+
+.getElementById(
+    "graphYearFilter"
+)
+
+.addEventListener(
+
+    "change",
+
+    ()=>{
+
+        graphFilters.year =
+
+            document.getElementById(
+                "graphYearFilter"
+            ).value;
+
+
+        graphFilters.month = "";
+
+
+        renderGraphFilters();
+
+        renderGraph();
+
+    }
+
+);
+
+/* =========================
+   グラフ 月変更
+========================= */
+
+document
+
+.getElementById(
+    "graphMonthFilter"
+)
+
+.addEventListener(
+
+    "change",
+
+    ()=>{
+
+        graphFilters.month =
+
+            document.getElementById(
+                "graphMonthFilter"
+            ).value;
+
+        renderGraph();
+
+    }
+
+);
+
+/* =========================
+   グラフデータ生成
+========================= */
+
+function createGraphData(){
+
+    const targetRecords =
+
+        [...records]
+
+        .filter(r=>
+
+            r.date.startsWith(
+                graphFilters.year
+            )
+
+        )
+
+        .sort(
+
+            (a,b)=>
+
+            new Date(a.date)
+
+            -
+
+            new Date(b.date)
+
+        );
+
+
+    /* =====================
+       月表示
+    ===================== */
+
+    if(graphFilters.month !== ""){
+
+        const monthRecords =
+
+            targetRecords.filter(
+
+                r=>
+
+                r.date.slice(5,7)
+
+                ===
+
+                graphFilters.month
+
+            );
+
+
+        let cumulative = 0;
+
+
+        return monthRecords.map(record=>{
+
+            cumulative +=
+
+                record.profit;
+
+
+            return {
+
+                label :
+
+                    record.date.slice(5),
+
+                profit :
+
+                    record.profit,
+
+                cumulative
+
+            };
+
+        });
+
+    }
+
+
+    /* =====================
+       年間表示
+    ===================== */
+
+    const monthlyMap = {};
+
+
+    targetRecords.forEach(record=>{
+
+        const month =
+
+            record.date.slice(5,7);
+
+
+        if(!monthlyMap[month]){
+
+            monthlyMap[month] = 0;
+
+        }
+
+
+        monthlyMap[month] +=
+
+            record.profit;
+
+    });
+
+
+    let cumulative = 0;
+
+
+    return Object.keys(monthlyMap)
+
+        .sort()
+
+        .map(month=>{
+
+            cumulative +=
+
+                monthlyMap[month];
+
+
+            return {
+
+                label :
+
+                    `${month}月`,
+
+                profit :
+
+                    monthlyMap[month],
+
+                cumulative
+
+            };
+
+        });
+
+}
+
+/* =========================
+   グラフ描画
+========================= */
+
+function renderGraph(){
+
+    const data = createGraphData();
+
+    const canvas =
+    document.getElementById(
+        "profitChart"
+    );
+
+    if(!canvas){
+        return;
+    }
+
+    if(profitChart){
+        profitChart.destroy();
+    }
+
+    profitChart = new Chart(
+
+        canvas,
+
+        {
+
+            data:{
+
+                labels:
+                data.map(
+                    d=>d.label
+                ),
+
+                datasets:[
+
+                    {
+
+                        type:"bar",
+                        
+                        order:2,
+
+                        label:"収支",
+
+                        data:
+                        data.map(
+                            d=>d.profit
+                        ),
+
+                        backgroundColor:
+
+                        data.map(d=>{
+
+                            if(d.profit > 0){
+                                return "#4F81BD";
+                            }
+
+                            if(d.profit < 0){
+                                return "#C0504D";
+                            }
+
+                            return "#999999";
+
+                        })
+
+                    },
+
+                    {
+
+                        type:"line",
+                        
+                        order:1,
+
+                        label:"累計",
+
+                        data:
+                        data.map(
+                            d=>d.cumulative
+                        ),
+
+                        borderColor:"#FFD700",
+
+                        backgroundColor:"#FFD700",
+
+                        borderWidth:3,
+
+                        pointRadius:4,
+
+                        pointHoverRadius:6,
+
+                        tension:0.2,
+
+                        yAxisID:"y"
+
+                    }
+
+                ]
+
+            },
+
+            options:{
+
+                responsive:true,
+
+                interaction:{
+
+                    mode:"index",
+
+                    intersect:false
+
+                },
+
+                scales:{
+
+                    y:{
+
+                        beginAtZero:true,
+
+                        grid:{
+
+                            color:(context)=>{
+
+                                return context.tick.value === 0
+
+                                    ? "#FFFFFF"
+
+                                    : "rgba(255,255,255,0.15)";
+
+                            },
+                            
+                            lineWidth:(context)=>{
+                            
+                                return context.tick.value === 0
+                                
+                                    ? 3
+                                    
+                                    : 1;
+                                    
+                                    }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+    /* =========================
+       補助情報
+    ========================= */
+
+    const summary =
+
+        document.getElementById(
+            "graphSummary"
+        );
+
+    if(summary){
+
+        if(data.length === 0){
+
+            summary.textContent =
+            "データなし";
+
+        }
+
+        else{
+
+            const profits =
+
+                data.map(
+                    d=>d.profit
+                );
+
+            const max =
+            Math.max(...profits);
+
+            const min =
+            Math.min(...profits);
+
+            const maxLabel =
+
+                graphFilters.month === ""
+
+                ?
+
+                "最高月収支"
+
+                :
+
+                "最高収支";
+
+            const minLabel =
+
+                graphFilters.month === ""
+
+                ?
+
+                "最低月収支"
+
+                :
+
+                "最低収支";
+
+            summary.innerHTML =
+
+                `${maxLabel}：
+                ${max.toLocaleString()}円
+                <br>
+                ${minLabel}：
+                ${min.toLocaleString()}円`;
+
+        }
+
+    }
+
+}
+
+/* =========================
    JSONバックアップ
 ========================= */
 
@@ -2945,6 +3731,41 @@ function backupJson(){
     );
 
 }
+
+/* =========================
+   グラフ画面遷移
+========================= */
+
+document
+.getElementById(
+    "openGraphBtn"
+)
+.addEventListener(
+    "click",
+    ()=>{
+
+        showPage(
+            "graphPage"
+        );
+
+    }
+);
+
+
+document
+.getElementById(
+    "backToAnalysisBtn"
+)
+.addEventListener(
+    "click",
+    ()=>{
+
+        showPage(
+            "analysisPage"
+        );
+
+    }
+);
 
 /* =========================
    JSON復元
