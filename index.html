@@ -282,6 +282,69 @@ td{
 
 }
 
+/* =========================
+   分析画面
+========================= */
+
+.analysis-filter{
+
+    margin: 15px 0;
+
+}
+
+.analysis-filter select{
+
+    margin-left: 8px;
+
+    padding: 6px;
+
+}
+
+
+.analysis-table{
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    margin-bottom: 25px;
+
+    font-size: 14px;
+
+}
+
+.analysis-table th,
+.analysis-table td{
+
+    border: 1px solid #ddd;
+
+    padding: 8px;
+
+    text-align: center;
+
+}
+
+.analysis-table th{
+
+    background: #222;
+
+    color: #fff;
+
+    font-weight: bold;
+
+}
+
+.analysis-table td:first-child{
+
+    text-align: left;
+
+    font-weight: bold;
+    
+    background: #111;
+
+
+}
+
 </style>
 
 
@@ -403,88 +466,193 @@ color:#bbbbbb;
 
 <div id="analysisPage" class="page">
 
-<h2>分析</h2>
+    <h2>分析</h2>
 
-<div class="card">
+    <!-- 分析対象月 -->
+    <div class="analysis-filter">
 
-<h3>基本分析</h3>
+        <label for="analysisMonth">
 
-<p>
-総収支：
-<span id="analysisTotalProfit">
-0円
-</span>
-</p>
+            分析対象
 
-<p>
-今月収支：
-<span id="analysisMonthProfit">
-0円
-</span>
-</p>
+        </label>
 
-<p>
-実戦回数：
-<span id="analysisPlayCount">
-0回
-</span>
-</p>
+        <select id="analysisMonth">
 
-<p>
-勝率：
-<span id="analysisWinRate">
-0%
-</span>
-</p>
+            <option value="">
+                今月
+            </option>
 
-<p>
-平均収支：
-<span id="analysisAverageProfit">
-0円
-</span>
-</p>
+        </select>
 
-<p>
-最大勝ち：
-<span id="analysisMaxWin">
-0円
-</span>
-</p>
-
-<p>
-最大負け：
-<span id="analysisMaxLose">
-0円
-</span>
-</p>
-
-</div>
+    </div>
 
 
-<div class="card">
+    <!-- 基本分析 -->
 
-<h3>店舗別分析</h3>
+    <h3>基本分析</h3>
 
-<div id="shopAnalysis">
+    <table class="analysis-table">
 
-データなし
+        <thead>
 
-</div>
+            <tr>
 
-</div>
+                <th></th>
+
+                <th>生涯</th>
+
+                <th id="basicMonthHeader">
+                    今月
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="basicAnalysisBody">
+
+            <tr>
+                <td>総収支</td>
+                <td>―</td>
+                <td>―</td>
+            </tr>
+
+            <tr>
+                <td>総投資</td>
+                <td>―</td>
+                <td>―</td>
+            </tr>
+
+            <tr>
+                <td>総回収</td>
+                <td>―</td>
+                <td>―</td>
+            </tr>
+
+            <tr>
+                <td>実戦回数</td>
+                <td>―</td>
+                <td>―</td>
+            </tr>
+
+            <tr>
+                <td>勝率</td>
+                <td>―</td>
+                <td>―</td>
+            </tr>
+
+            <tr>
+                <td>平均収支</td>
+                <td>―</td>
+                <td>―</td>
+            </tr>
+
+            <tr>
+                <td>最大勝ち</td>
+                <td>―</td>
+                <td>―</td>
+            </tr>
+
+            <tr>
+                <td>最大負け</td>
+                <td>―</td>
+                <td>―</td>
+            </tr>
+
+        </tbody>
+
+    </table>
 
 
-<div class="card">
+    <!-- 店舗ランキング -->
 
-<h3>機種別分析</h3>
+    <h3>店舗別収支ランキング</h3>
 
-<div id="machineAnalysis">
+    <table class="analysis-table">
 
-データなし
+        <thead>
 
-</div>
+            <tr>
 
-</div>
+                <th>順位</th>
+
+                <th>生涯</th>
+
+                <th id="shopMonthHeader">今月</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="shopAnalysisBody">
+
+            <tr>
+                <td>1位</td>
+                <td>―</td>
+                <td>―</td>
+            </tr>
+
+            <tr>
+                <td>2位</td>
+                <td>―</td>
+                <td>―</td>
+            </tr>
+
+            <tr>
+                <td>3位</td>
+                <td>―</td>
+                <td>―</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+    <!-- 機種ランキング -->
+
+    <h3>機種別収支ランキング</h3>
+
+    <table class="analysis-table">
+
+        <thead>
+
+            <tr>
+
+                <th>順位</th>
+
+                <th>生涯</th>
+
+                <th id="machineMonthHeader">今月</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="machineAnalysisBody">
+
+            <tr>
+                <td>1位</td>
+                <td>―</td>
+                <td>―</td>
+            </tr>
+
+            <tr>
+                <td>2位</td>
+                <td>―</td>
+                <td>―</td>
+            </tr>
+
+            <tr>
+                <td>3位</td>
+                <td>―</td>
+                <td>―</td>
+            </tr>
+
+        </tbody>
+
+    </table>
 
 </div>
 
@@ -735,6 +903,13 @@ let listFilters = {
     machine: ""
 
 };
+
+/* =========================
+   分析対象月
+========================= */
+
+let analysisMonth = "";
+
 
 function saveStorage(){
 
@@ -1480,6 +1655,8 @@ function renderAll(){
     renderFilters();
 
     renderList();
+    
+    renderAnalysisMonth();
 
     renderAnalysis();
 
@@ -2013,310 +2190,648 @@ renderSelects();
 
 function renderAnalysis(){
 
-    /* データなしの場合 */
+    const basicBody =
+    document.getElementById(
+        "basicAnalysisBody"
+    );
 
-    if(records.length === 0){
-
-        document.getElementById(
-            "analysisTotalProfit"
-        ).textContent = "0円";
-
-        document.getElementById(
-            "analysisMonthProfit"
-        ).textContent = "0円";
-
-        document.getElementById(
-            "analysisPlayCount"
-        ).textContent = "0回";
-
-        document.getElementById(
-            "analysisWinRate"
-        ).textContent = "0%";
-
-        document.getElementById(
-            "analysisAverageProfit"
-        ).textContent = "0円";
-
-        document.getElementById(
-            "analysisMaxWin"
-        ).textContent = "0円";
-
-        document.getElementById(
-            "analysisMaxLose"
-        ).textContent = "0円";
-
+    if(!basicBody){
         return;
+    }
+
+
+    const targetMonth =
+    analysisMonth;
+
+    document.getElementById(
+        "basicMonthHeader"
+    ).textContent =
+    targetMonth;
+
+/* =========================
+   ランキングヘッダー更新
+========================= */
+
+document.getElementById(
+    "shopMonthHeader"
+).textContent =
+targetMonth;
+
+document.getElementById(
+    "machineMonthHeader"
+).textContent =
+targetMonth;
+
+    const lifeRecords =
+    [...records];
+
+
+    const monthRecords =
+
+        records.filter(
+            r=>
+
+            r.date.startsWith(
+                targetMonth
+            )
+        );
+
+
+    function createSummary(target){
+
+        const totalProfit =
+        target.reduce(
+            (sum,r)=>
+            sum + r.profit,
+            0
+        );
+
+        const totalInvestment =
+        target.reduce(
+            (sum,r)=>
+            sum + r.investment,
+            0
+        );
+
+        const totalCollection =
+        target.reduce(
+            (sum,r)=>
+            sum + r.collection,
+            0
+        );
+
+
+        const winCount =
+        target.filter(
+            r=>r.profit > 0
+        ).length;
+
+
+        const loseCount =
+        target.filter(
+            r=>r.profit < 0
+        ).length;
+
+
+        const drawCount =
+        target.filter(
+            r=>r.profit === 0
+        ).length;
+
+
+        const playCount =
+        target.length;
+
+
+        const winRate =
+
+            (winCount + loseCount)
+
+            === 0
+
+            ? 0
+
+            :
+
+            (
+
+                winCount
+
+                /
+
+                (winCount + loseCount)
+
+            )
+
+            * 100;
+
+
+        const averageProfit =
+
+            playCount === 0
+
+            ? 0
+
+            :
+
+            totalProfit
+            /
+            playCount;
+
+
+        const maxWin =
+
+            playCount === 0
+
+            ? 0
+
+            :
+
+            Math.max(
+                ...target.map(
+                    r=>r.profit
+                )
+            );
+
+
+        const maxLose =
+
+            playCount === 0
+
+            ? 0
+
+            :
+
+            Math.min(
+                ...target.map(
+                    r=>r.profit
+                )
+            );
+
+
+        return {
+
+            totalProfit,
+
+            totalInvestment,
+
+            totalCollection,
+
+            playCount,
+
+            winCount,
+
+            loseCount,
+
+            drawCount,
+
+            winRate,
+
+            averageProfit,
+
+            maxWin,
+
+            maxLose
+
+        };
 
     }
 
 
-    /* 総収支 */
-
-    const totalProfit =
-    records.reduce(
-        (sum,r)=>sum+r.profit,
-        0
+    const life =
+    createSummary(
+        lifeRecords
     );
 
 
-    /* 今月収支 */
-
-    const now = new Date();
-
-    const currentMonth =
-        now.getFullYear()
-        + "-"
-        + String(
-            now.getMonth()+1
-        ).padStart(2,"0");
-
-
-    const monthProfit =
-    records
-    .filter(
-        r=>r.date.startsWith(
-            currentMonth
-        )
-    )
-    .reduce(
-        (sum,r)=>sum+r.profit,
-        0
+    const month =
+    createSummary(
+        monthRecords
     );
 
 
-    /* 実戦回数 */
+    basicBody.innerHTML = `
 
-    const playCount =
-    records.length;
+        <tr>
 
+            <td>総収支</td>
 
-    /* 勝率 */
+            <td>
+                ${life.totalProfit.toLocaleString()}円
+            </td>
 
-    const winCount =
-    records.filter(
-        r=>r.profit > 0
-    ).length;
+            <td>
+                ${month.totalProfit.toLocaleString()}円
+            </td>
 
+        </tr>
 
-    const winRate =
-    (winCount / playCount)
-    * 100;
+        <tr>
 
+            <td>総投資</td>
 
-    /* 平均収支 */
+            <td>
+                ${life.totalInvestment.toLocaleString()}円
+            </td>
 
-    const averageProfit =
-    totalProfit / playCount;
+            <td>
+                ${month.totalInvestment.toLocaleString()}円
+            </td>
 
+        </tr>
 
-    /* 最大勝ち */
+        <tr>
 
-    const maxWin =
-    Math.max(
-        ...records.map(
-            r=>r.profit
-        )
-    );
+            <td>総回収</td>
 
+            <td>
+                ${life.totalCollection.toLocaleString()}円
+            </td>
 
-    /* 最大負け */
+            <td>
+                ${month.totalCollection.toLocaleString()}円
+            </td>
 
-    const maxLose =
-    Math.min(
-        ...records.map(
-            r=>r.profit
-        )
-    );
+        </tr>
 
+        <tr>
 
-    /* 表示 */
+            <td>実戦回数</td>
 
-    document.getElementById(
-        "analysisTotalProfit"
-    ).textContent =
-    totalProfit.toLocaleString()
-    + "円";
+            <td>
 
+                ${life.playCount}回
 
-    document.getElementById(
-        "analysisMonthProfit"
-    ).textContent =
-    monthProfit.toLocaleString()
-    + "円";
+                <br>
 
+                (${life.winCount}勝
+                ${life.loseCount}敗
+                ${life.drawCount}分)
 
-    document.getElementById(
-        "analysisPlayCount"
-    ).textContent =
-    playCount
-    + "回";
+            </td>
 
+            <td>
 
-    document.getElementById(
-        "analysisWinRate"
-    ).textContent =
-    winRate.toFixed(1)
-    + "%";
+                ${month.playCount}回
 
+                <br>
 
-    document.getElementById(
-        "analysisAverageProfit"
-    ).textContent =
-    averageProfit.toLocaleString(
-        undefined,
-        {
-            maximumFractionDigits:0
+                (${month.winCount}勝
+                ${month.loseCount}敗
+                ${month.drawCount}分)
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td>勝率</td>
+
+            <td>
+
+                ${life.winRate.toFixed(1)}%
+
+            </td>
+
+            <td>
+
+                ${month.winRate.toFixed(1)}%
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td>平均収支</td>
+
+            <td>
+
+                ${Math.round(
+                    life.averageProfit
+                ).toLocaleString()}円
+
+            </td>
+
+            <td>
+
+                ${Math.round(
+                    month.averageProfit
+                ).toLocaleString()}円
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td>最大勝ち</td>
+
+            <td>
+
+                ${life.maxWin.toLocaleString()}円
+
+            </td>
+
+            <td>
+
+                ${month.maxWin.toLocaleString()}円
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td>最大負け</td>
+
+            <td>
+
+                ${life.maxLose.toLocaleString()}円
+
+            </td>
+
+            <td>
+
+                ${month.maxLose.toLocaleString()}円
+
+            </td>
+
+        </tr>
+
+    `;
+
+/* =========================
+   店舗別ランキング
+========================= */
+
+function createRanking(records, key){
+
+    const summary = {};
+
+    records.forEach(record=>{
+
+        const name = record[key];
+
+        if(!name){
+            return;
         }
-    )
-    + "円";
 
+        if(!summary[name]){
 
-    document.getElementById(
-        "analysisMaxWin"
-    ).textContent =
-    maxWin.toLocaleString()
-    + "円";
+            summary[name] = 0;
 
+        }
 
-    document.getElementById(
-        "analysisMaxLose"
-    ).textContent =
-    maxLose.toLocaleString()
-    + "円";
+        summary[name] += record.profit;
 
-/* =========================
-   店舗別分析
-========================= */
+    });
 
-const shopSummary = {};
+    return Object.entries(summary)
 
-records.forEach(record=>{
+        .sort(
+            (a,b)=>
+            b[1] - a[1]
+        )
 
-    if(!shopSummary[record.shop]){
-
-        shopSummary[record.shop] = {
-
-            profit: 0,
-            count: 0
-
-        };
-
-    }
-
-    shopSummary[record.shop].profit += record.profit;
-
-    shopSummary[record.shop].count++;
-
-});
-
-
-const shopRanking =
-Object.entries(shopSummary)
-
-.sort(
-    (a,b)=>
-    b[1].profit - a[1].profit
-);
-
-
-document.getElementById(
-    "shopAnalysis"
-).innerHTML =
-
-shopRanking.length === 0
-
-? "データなし"
-
-: shopRanking.map(([shop,data],index)=>`
-
-    <div style="
-        padding:8px 0;
-        border-bottom:1px solid #333;
-    ">
-
-        ${index + 1}位
-
-        ${shop}
-
-        <br>
-
-        収支：
-        ${data.profit.toLocaleString()}円
-
-        （${data.count}回）
-
-    </div>
-
-`).join("");
-
-
-
-/* =========================
-   機種別分析
-========================= */
-
-const machineSummary = {};
-
-records.forEach(record=>{
-
-    if(!machineSummary[record.machine]){
-
-        machineSummary[record.machine] = {
-
-            profit: 0,
-            count: 0
-
-        };
-
-    }
-
-    machineSummary[record.machine].profit += record.profit;
-
-    machineSummary[record.machine].count++;
-
-});
-
-
-const machineRanking =
-Object.entries(machineSummary)
-
-.sort(
-    (a,b)=>
-    b[1].profit - a[1].profit
-);
-
-
-document.getElementById(
-    "machineAnalysis"
-).innerHTML =
-
-machineRanking.length === 0
-
-? "データなし"
-
-: machineRanking.map(([machine,data],index)=>`
-
-    <div style="
-        padding:8px 0;
-        border-bottom:1px solid #333;
-    ">
-
-        ${index + 1}位
-
-        ${machine}
-
-        <br>
-
-        収支：
-        ${data.profit.toLocaleString()}円
-
-        （${data.count}回）
-
-    </div>
-
-`).join("");
+        .slice(0,3);
 
 }
+
+
+/* =========================
+   店舗別
+========================= */
+
+const lifeShopRanking =
+createRanking(
+    lifeRecords,
+    "shop"
+);
+
+const monthShopRanking =
+createRanking(
+    monthRecords,
+    "shop"
+);
+
+const shopBody =
+document.getElementById(
+    "shopAnalysisBody"
+);
+
+shopBody.innerHTML = "";
+
+for(let i=0;i<3;i++){
+
+    const lifeData =
+    lifeShopRanking[i];
+
+    const monthData =
+    monthShopRanking[i];
+
+    shopBody.innerHTML += `
+
+        <tr>
+
+            <td>
+                ${i+1}位
+            </td>
+
+            <td>
+
+                ${
+                    lifeData
+
+                    ?
+
+                    `${lifeData[0]}
+                    <br>
+                    ${lifeData[1].toLocaleString()}円`
+
+                    :
+
+                    "-"
+
+                }
+
+            </td>
+
+            <td>
+
+                ${
+                    monthData
+
+                    ?
+
+                    `${monthData[0]}
+                    <br>
+                    ${monthData[1].toLocaleString()}円`
+
+                    :
+
+                    "-"
+
+                }
+
+            </td>
+
+        </tr>
+
+    `;
+
+}
+
+
+/* =========================
+   機種別
+========================= */
+
+const lifeMachineRanking =
+createRanking(
+    lifeRecords,
+    "machine"
+);
+
+const monthMachineRanking =
+createRanking(
+    monthRecords,
+    "machine"
+);
+
+const machineBody =
+document.getElementById(
+    "machineAnalysisBody"
+);
+
+machineBody.innerHTML = "";
+
+for(let i=0;i<3;i++){
+
+    const lifeData =
+    lifeMachineRanking[i];
+
+    const monthData =
+    monthMachineRanking[i];
+
+    machineBody.innerHTML += `
+
+        <tr>
+
+            <td>
+                ${i+1}位
+            </td>
+
+            <td>
+
+                ${
+                    lifeData
+
+                    ?
+
+                    `${lifeData[0]}
+                    <br>
+                    ${lifeData[1].toLocaleString()}円`
+
+                    :
+
+                    "-"
+
+                }
+
+            </td>
+
+            <td>
+
+                ${
+                    monthData
+
+                    ?
+
+                    `${monthData[0]}
+                    <br>
+                    ${monthData[1].toLocaleString()}円`
+
+                    :
+
+                    "-"
+
+                }
+
+            </td>
+
+        </tr>
+
+    `;
+
+}
+
+}
+
+
+/* =========================
+   分析対象月生成
+========================= */
+
+function renderAnalysisMonth(){
+
+    const select =
+    document.getElementById(
+        "analysisMonth"
+    );
+
+    if(!select){
+        return;
+    }
+
+    const months = [
+
+        ...new Set(
+
+            records.map(
+                r => r.date.slice(0,7)
+            )
+
+        )
+
+    ]
+    .sort()
+    .reverse();
+
+
+    select.innerHTML =
+
+        months.map(
+            month =>
+
+            `<option value="${month}">
+                ${month}
+            </option>`
+
+        )
+        .join("");
+
+
+    /* 初回は最新月 */
+
+    if(
+        !analysisMonth &&
+        months.length > 0
+    ){
+
+        analysisMonth =
+        months[0];
+
+    }
+
+    select.value =
+    analysisMonth;
+
+}
+
+/* =========================
+   分析対象月変更
+========================= */
+
+document
+.getElementById("analysisMonth")
+.addEventListener(
+    "change",
+    ()=>{
+
+        analysisMonth =
+
+            document
+            .getElementById(
+                "analysisMonth"
+            )
+            .value;
+
+        renderAnalysis();
+
+    }
+);
 
 /* =========================
    JSONバックアップ
