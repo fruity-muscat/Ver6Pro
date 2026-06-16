@@ -345,6 +345,7 @@ td{
 
 }
 
+
 /* =========================
    グラフ画面
 ========================= */
@@ -445,6 +446,107 @@ td{
 
 }
 
+/* =========================
+   情報タブ
+========================= */
+
+#machineCount{
+
+    margin-bottom:12px;
+
+    font-weight:bold;
+
+}
+
+
+#machineList{
+
+    background:#1f1f1f;
+
+    border-radius:8px;
+
+    padding:12px;
+
+    margin-bottom:16px;
+
+}
+
+
+.machine-json-area{
+
+    display:flex;
+
+    gap:12px;
+
+}
+
+
+.machine-json-area button{
+
+    flex:1;
+
+}
+
+
+/* =========================
+   機種詳細
+========================= */
+
+.machine-detail{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+}
+
+
+.detail-item{
+
+    background:#1f1f1f;
+
+    border-radius:8px;
+
+    padding:12px;
+
+}
+
+
+.detail-label{
+
+    font-size:12px;
+
+    color:#999;
+
+    margin-bottom:4px;
+
+}
+
+
+.back-btn{
+
+    margin-bottom:16px;
+
+}
+
+.machine-item{
+
+    padding:12px;
+
+    border-bottom:1px solid #444;
+
+    cursor:pointer;
+
+}
+
+.machine-item:hover{
+
+    background:#333;
+
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -452,7 +554,7 @@ td{
 </head>
 <body>
 
-<!-- HOME -->
+<!-- HOME　ホーム画面 -->
 
 <div id="homePage" class="page active">
 
@@ -485,7 +587,7 @@ td{
 
 </div>
 
-<!-- SETTINGS -->
+<!-- SETTINGS　設定画面 -->
 
 <div id="settingsPage" class="page">
 
@@ -563,7 +665,7 @@ color:#bbbbbb;
 </div>
 
 
-<!-- ANALYSIS -->
+<!-- ANALYSIS　分析画面 -->
 
 <div id="analysisPage" class="page">
 
@@ -771,7 +873,7 @@ color:#bbbbbb;
 </div>
 
 
-<!-- GRAPH -->
+<!-- GRAPH　グラフ画面 -->
 
 <div
     id="graphPage"
@@ -827,7 +929,251 @@ color:#bbbbbb;
 </div>
 
 
-<!-- LIST -->
+<!-- INFO　情報画面 -->
+
+<div id="infoPage" class="page">
+
+    <h2>情報</h2>
+
+    <div id="machineCount">
+
+        登録機種数：0件
+
+    </div>
+
+
+    <div id="infoMachineList">
+
+        機種データがありません
+
+    </div>
+
+
+    <div class="machine-json-area">
+
+        <button
+            id="importMachineBtn"
+            type="button">
+
+            JSONインポート
+
+        </button>
+
+
+        <button
+            id="exportMachineBtn"
+            type="button">
+
+            JSONエクスポート
+
+        </button>
+        
+        <input
+            type="file"
+            id="machineJsonInput"
+            accept=".json"
+            style="display:none">
+
+    </div>
+
+</div>
+
+
+<!-- MACHINE DETAIL　機種詳細画面 -->
+
+<div
+    id="machineDetailPage"
+    class="page">
+
+    <button
+        id="backToInfoBtn"
+        type="button"
+        class="back-btn">
+
+        ← 情報一覧へ戻る
+
+    </button>
+
+
+    <h2>機種詳細</h2>
+
+
+    <div class="machine-detail">
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                正式機種名
+            </div>
+
+            <div id="detailMachine">
+                ―
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                一覧表示名
+            </div>
+
+            <div id="detailDisplayName">
+                ―
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                メーカー
+            </div>
+
+            <div id="detailMaker">
+                ―
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                天井
+            </div>
+
+            <div id="detailCeiling">
+                ―
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                朝イチ恩恵
+            </div>
+
+            <div id="detailReset">
+                ―
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                狙い目
+            </div>
+
+            <div id="detailTarget">
+                ―
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                ゾーン
+            </div>
+
+            <div id="detailZone">
+                ―
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                やめ時
+            </div>
+
+            <div id="detailQuit">
+                ―
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                注意点
+            </div>
+
+            <div id="detailWarning">
+                ―
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                有利区間情報
+            </div>
+
+            <div id="detailYuriku">
+                ―
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                補足
+            </div>
+
+            <div id="detailSupplement">
+                ―
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                更新日
+            </div>
+
+            <div id="detailUpdated">
+                ―
+            </div>
+
+        </div>
+
+
+        <div class="detail-item">
+
+            <div class="detail-label">
+                メモ
+            </div>
+
+            <div id="detailMemo">
+                ―
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- LIST　一覧画面 -->
 
 <div id="listPage" class="page">
 
@@ -890,7 +1236,7 @@ color:#bbbbbb;
 
 </div>
 
-<!-- REGISTER -->
+<!-- REGISTER　登録画面 -->
 
 <div id="registerPage" class="page">
 
@@ -1020,7 +1366,8 @@ id="deleteModal">
 
 </div>
 
-<!-- NAV -->
+
+<!-- NAV　下部タブ -->
 
 <div class="bottom-nav">
 
@@ -1034,6 +1381,10 @@ id="deleteModal">
 
 <button data-page="analysisPage">
 分析
+</button>
+
+<button data-page="infoPage">
+情報
 </button>
 
 <button data-page="listPage">
@@ -1059,6 +1410,378 @@ localStorage.getItem(STORAGE_KEY)
 
 let editingId = null;
 let selectedId = null;
+
+/* =========================
+   機種マスタ
+========================= */
+
+let machineMasters = [];
+
+/* =========================
+   機種マスタ保存
+========================= */
+
+function saveMachineMasters(){
+
+    localStorage.setItem(
+
+        "machineMasters",
+
+        JSON.stringify(
+            machineMasters
+        )
+
+    );
+
+}
+
+/* =========================
+   機種マスタ読込
+========================= */
+
+function loadMachineMasters(){
+
+    const saved =
+
+        localStorage.getItem(
+            "machineMasters"
+        );
+
+
+    if(saved){
+
+        try{
+
+            machineMasters =
+
+                JSON.parse(saved);
+
+        }
+
+        catch(error){
+
+            console.error(
+
+                "機種マスタ読込失敗",
+
+                error
+
+            );
+
+            machineMasters = [];
+
+        }
+
+    }
+
+    else{
+
+        machineMasters = [];
+
+    }
+
+}
+
+
+/* =========================
+   初期化
+========================= */
+
+loadMachineMasters();
+
+
+/* Part3 動作確認用（後で削除予定） */
+
+if(machineMasters.length === 0){
+
+    machineMasters = [
+
+        {
+
+            machineName:"L東京喰種",
+
+            displayName:"L東京喰種",
+            
+            maker:"SANKYO",
+    tenjo:"950G",
+    morning:"朝イチ950G→650G短縮あり",
+    target:"650G〜",
+    zone:"なし",
+    yametoki:"前兆確認後",
+    caution:"AT後即ヤメ注意",
+    yuriku:"リセット時再抽選",
+    note:"テストデータ",
+    updated:"2026-06",
+    memo:""
+
+        },
+
+        {
+
+            machineName:"L北斗の拳",
+
+            displayName:"L北斗の拳"
+
+        },
+
+        {
+
+            machineName:"Lゴッドイーター",
+
+            displayName:"Lゴッドイーター"
+
+        }
+
+    ];
+
+}
+
+console.log(
+    "machineMasters",
+    machineMasters
+);
+
+/* =========================
+   選択中機種
+========================= */
+
+let selectedMachine = null;
+
+/* =========================
+   機種一覧描画
+========================= */
+
+function renderMachineList(){
+
+    const countEl =
+
+        document.getElementById(
+            "machineCount"
+        );
+
+    const listEl =
+
+        document.getElementById(
+            "infoMachineList"
+        );
+
+
+    if(!countEl || !listEl){
+
+        return;
+
+    }
+
+
+    countEl.textContent =
+
+        `登録機種数：${machineMasters.length}件`;
+
+
+    if(machineMasters.length === 0){
+
+        listEl.innerHTML =
+
+            "機種データがありません";
+
+        return;
+
+    }
+
+
+    const sortedMachines =
+
+        [...machineMasters]
+
+        .sort(
+
+            (a,b)=>
+
+                a.displayName.localeCompare(
+
+                    b.displayName,
+
+                    "ja"
+
+                )
+
+        );
+
+
+listEl.innerHTML =
+    sortedMachines.map(
+        machine=>`
+            <div
+                class="machine-item"
+                data-machine-id="${machine.machineName}">
+
+                ${machine.displayName}
+
+            </div>
+        `
+    ).join("");
+
+
+listEl
+.querySelectorAll(
+    ".machine-item"
+)
+.forEach(item=>{
+
+    item.addEventListener(
+
+        "click",
+
+        ()=>{
+
+            selectedMachine =
+
+                machineMasters.find(
+
+                    m=>
+
+                    m.machineName ===
+
+                    item.dataset.machineId
+
+                );
+
+
+            renderMachineDetail();
+
+            showPage(
+                "machineDetailPage"
+            );
+
+        }
+
+    );
+
+});
+
+}
+
+
+/* =========================
+   機種詳細描画
+========================= */
+
+function renderMachineDetail(){
+
+    if(!selectedMachine){
+
+        return;
+
+    }
+
+    document.getElementById(
+        "detailMachine"
+    ).textContent =
+        selectedMachine.machineName || "―";
+
+
+    document.getElementById(
+        "detailDisplayName"
+    ).textContent =
+        selectedMachine.displayName || "―";
+
+
+    document.getElementById(
+        "detailMaker"
+    ).textContent =
+        selectedMachine.maker || "―";
+
+
+    document.getElementById(
+        "detailCeiling"
+    ).textContent =
+        selectedMachine.tenjo || "―";
+
+
+    document.getElementById(
+        "detailReset"
+    ).textContent =
+        selectedMachine.morning || "―";
+
+
+    document.getElementById(
+        "detailTarget"
+    ).textContent =
+        selectedMachine.target || "―";
+
+
+    document.getElementById(
+        "detailZone"
+    ).textContent =
+        selectedMachine.zone || "―";
+
+
+    document.getElementById(
+        "detailQuit"
+    ).textContent =
+        selectedMachine.yametoki || "―";
+
+
+    document.getElementById(
+        "detailWarning"
+    ).textContent =
+        selectedMachine.caution || "―";
+
+
+    document.getElementById(
+        "detailYuriku"
+    ).textContent =
+        selectedMachine.yuriku || "―";
+
+
+    document.getElementById(
+        "detailSupplement"
+    ).textContent =
+        selectedMachine.note || "―";
+
+
+    document.getElementById(
+        "detailUpdated"
+    ).textContent =
+        selectedMachine.updated || "―";
+
+
+    document.getElementById(
+        "detailMemo"
+    ).textContent =
+        selectedMachine.memo || "―";
+
+}
+
+
+/* =========================
+   戻るボタンイベント
+========================= */
+
+const backToInfoBtn =
+
+document.getElementById(
+    "backToInfoBtn"
+);
+
+if(backToInfoBtn){
+
+    backToInfoBtn.addEventListener(
+
+        "click",
+
+        ()=>{
+
+            showPage(
+                "infoPage"
+            );
+
+        }
+
+    );
+
+}
+
 
 /* =========================
    一覧フィルター状態
@@ -1852,6 +2575,8 @@ function renderAll(){
     renderGraphFilters();
 
     renderGraph();
+    
+    renderMachineList();
 
 }
 
@@ -3619,6 +4344,301 @@ function renderGraph(){
 
 }
 
+
+/* =========================
+   グラフ画面遷移
+========================= */
+
+const openGraphBtn =
+document.getElementById(
+    "openGraphBtn"
+);
+
+if(openGraphBtn){
+
+    openGraphBtn.addEventListener(
+
+        "click",
+
+        ()=>{
+
+            showPage(
+                "graphPage"
+            );
+
+        }
+
+    );
+
+}
+
+
+/* =========================
+   機種JSONインポート
+========================= */
+
+document
+.getElementById(
+    "importMachineBtn"
+)
+.addEventListener(
+
+    "click",
+
+    ()=>{
+
+        document
+        .getElementById(
+            "machineJsonInput"
+        )
+        .click();
+
+    }
+
+);
+
+document
+.getElementById(
+    "machineJsonInput"
+)
+.addEventListener(
+
+    "change",
+
+    event=>{
+
+        const file =
+
+            event.target.files[0];
+
+
+        if(!file){
+
+            return;
+
+        }
+
+
+        const reader =
+
+            new FileReader();
+
+
+        reader.onload = e=>{
+
+            try{
+
+                const imported =
+
+                    JSON.parse(
+                        e.target.result
+                    );
+
+
+                if(
+
+                    !Array.isArray(
+                        imported
+                    )
+
+                ){
+
+                    throw new Error(
+                        "JSON形式不正"
+                    );
+
+                }
+
+
+                machineMasters =
+
+                    imported;
+
+
+                saveMachineMasters();
+
+
+                renderMachineList();
+
+
+                alert(
+
+                    `${machineMasters.length}件の機種情報を取り込みました。`
+
+                );
+
+            }
+
+            catch(error){
+
+                console.error(error);
+
+                alert(
+
+                    "JSONの読込に失敗しました。"
+
+                );
+
+            }
+
+        };
+
+
+        reader.readAsText(file);
+        
+        event.target.value = "";
+
+    }
+
+);
+
+
+/* =========================
+   機種JSONエクスポート
+========================= */
+
+document
+.getElementById(
+    "exportMachineBtn"
+)
+.addEventListener(
+
+    "click",
+
+    ()=>{
+
+        try{
+
+            const json =
+
+                JSON.stringify(
+
+                    machineMasters,
+
+                    null,
+
+                    2
+
+                );
+
+
+            const blob =
+
+                new Blob(
+
+                    [json],
+
+                    {
+
+                        type:
+
+                        "application/json"
+
+                    }
+
+                );
+
+
+            const url =
+
+                URL.createObjectURL(
+                    blob
+                );
+
+
+            const a =
+
+                document.createElement(
+                    "a"
+                );
+
+
+            const today =
+
+                new Date();
+
+
+            const yyyy =
+
+                today.getFullYear();
+
+
+            const mm =
+
+                String(
+
+                    today.getMonth() + 1
+
+                ).padStart(
+                    2,
+                    "0"
+                );
+
+
+            const dd =
+
+                String(
+
+                    today.getDate()
+
+                ).padStart(
+                    2,
+                    "0"
+                );
+
+
+            a.href = url;
+
+
+            a.download =
+
+                `SLOTIN_machineMasters_${yyyy}${mm}${dd}.json`;
+
+
+            document.body.appendChild(
+                a
+            );
+
+
+            a.click();
+
+
+            document.body.removeChild(
+                a
+            );
+
+
+            URL.revokeObjectURL(
+                url
+            );
+
+
+            alert(
+
+                `${machineMasters.length}件の機種情報を出力しました。`
+
+            );
+
+        }
+
+        catch(error){
+
+            console.error(error);
+
+
+            alert(
+
+                "JSONの出力に失敗しました。"
+
+            );
+
+        }
+
+    }
+
+);
+
+
 /* =========================
    JSONバックアップ
 ========================= */
@@ -3732,40 +4752,6 @@ function backupJson(){
 
 }
 
-/* =========================
-   グラフ画面遷移
-========================= */
-
-document
-.getElementById(
-    "openGraphBtn"
-)
-.addEventListener(
-    "click",
-    ()=>{
-
-        showPage(
-            "graphPage"
-        );
-
-    }
-);
-
-
-document
-.getElementById(
-    "backToAnalysisBtn"
-)
-.addEventListener(
-    "click",
-    ()=>{
-
-        showPage(
-            "analysisPage"
-        );
-
-    }
-);
 
 /* =========================
    JSON復元
@@ -3988,6 +4974,7 @@ if(
     );
 
 }
+
 
 </script>
 
