@@ -207,11 +207,31 @@ td{
 }
 
 .register-header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
     margin-bottom:12px;
+
+}
+
+.page h2{
+
+    text-align:center;
+
 }
 
 .register-header h2{
-    margin-top:8px;
+
+    flex:1;
+
+    text-align:center;
+
+    margin:0;
+
 }
 
 .small-delete-btn{
@@ -350,16 +370,14 @@ td{
    グラフ画面
 ========================= */
 
-.analysis-header,
-.graph-header{
+.analysis-header h2,
+.graph-header h2{
 
-    display:flex;
+    flex:1;
 
-    justify-content:space-between;
+    text-align:center;
 
-    align-items:center;
-
-    margin-bottom:16px;
+    margin:0;
 
 }
 
@@ -612,20 +630,6 @@ placeholder="店舗名">
 </div>
 
 <div class="card">
-
-<h3>機種管理</h3>
-
-<input
-type="text"
-id="newMachine"
-placeholder="機種名">
-
-<button id="addMachineBtn">
-機種追加
-</button>
-
-<div id="machineList">
-</div>
 
 </div>
 
@@ -968,6 +972,14 @@ color:#bbbbbb;
 
         </button>
         
+        <button
+            id="addMachineBtn"
+            type="button">
+
+            機種追加
+
+        </button>
+        
         <input
             type="file"
             id="machineJsonInput"
@@ -985,18 +997,30 @@ color:#bbbbbb;
     id="machineDetailPage"
     class="page">
 
-    <button
-        id="backToInfoBtn"
-        type="button"
-        class="back-btn">
+<div class="register-header">
 
-        ← 情報一覧へ戻る
+    <button
+        id="deleteMachineBtn"
+        class="small-delete-btn"
+        style="display:none;"
+        type="button">
+
+        🗑
 
     </button>
 
-
     <h2>機種詳細</h2>
 
+    <button
+        id="saveMachineBtn"
+        class="small-delete-btn"
+        type="button">
+
+        保存
+
+    </button>
+
+</div>
 
     <div class="machine-detail">
 
@@ -1006,10 +1030,10 @@ color:#bbbbbb;
                 正式機種名
             </div>
 
-            <div id="detailMachine">
-                ―
-            </div>
-
+            <input
+                type="text"
+                id="detailMachine">
+    
         </div>
 
 
@@ -1019,9 +1043,9 @@ color:#bbbbbb;
                 一覧表示名
             </div>
 
-            <div id="detailDisplayName">
-                ―
-            </div>
+            <input
+                type="text"
+                id="detailDisplayName">
 
         </div>
 
@@ -1032,9 +1056,9 @@ color:#bbbbbb;
                 メーカー
             </div>
 
-            <div id="detailMaker">
-                ―
-            </div>
+            <input
+                type="text"
+                id="detailMaker">
 
         </div>
 
@@ -1045,9 +1069,10 @@ color:#bbbbbb;
                 天井
             </div>
 
-            <div id="detailCeiling">
-                ―
-            </div>
+            <textarea
+                id="detailCeiling"
+                rows="5">
+            </textarea>
 
         </div>
 
@@ -1058,9 +1083,10 @@ color:#bbbbbb;
                 朝イチ恩恵
             </div>
 
-            <div id="detailReset">
-                ―
-            </div>
+            <textarea
+                id="detailReset"
+                rows="5">
+            </textarea>
 
         </div>
 
@@ -1071,9 +1097,10 @@ color:#bbbbbb;
                 狙い目
             </div>
 
-            <div id="detailTarget">
-                ―
-            </div>
+            <textarea
+                id="detailTarget"
+                rows="3">
+            </textarea>
 
         </div>
 
@@ -1084,9 +1111,10 @@ color:#bbbbbb;
                 ゾーン
             </div>
 
-            <div id="detailZone">
-                ―
-            </div>
+            <textarea
+                id="detailZone"
+                rows="3">
+            </textarea>
 
         </div>
 
@@ -1097,9 +1125,10 @@ color:#bbbbbb;
                 やめ時
             </div>
 
-            <div id="detailQuit">
-                ―
-            </div>
+            <textarea
+                id="detailQuit"
+                rows="3">
+            </textarea>
 
         </div>
 
@@ -1110,9 +1139,10 @@ color:#bbbbbb;
                 注意点
             </div>
 
-            <div id="detailWarning">
-                ―
-            </div>
+            <textarea
+                id="detailWarning"
+                rows="3">
+            </textarea>
 
         </div>
 
@@ -1123,9 +1153,10 @@ color:#bbbbbb;
                 有利区間情報
             </div>
 
-            <div id="detailYuriku">
-                ―
-            </div>
+            <textarea
+                id="detailYuriku"
+                rows="3">
+            </textarea>
 
         </div>
 
@@ -1136,9 +1167,10 @@ color:#bbbbbb;
                 補足
             </div>
 
-            <div id="detailSupplement">
-                ―
-            </div>
+            <textarea
+                id="detailSupplement"
+                rows="3">
+            </textarea>
 
         </div>
 
@@ -1149,9 +1181,9 @@ color:#bbbbbb;
                 更新日
             </div>
 
-            <div id="detailUpdated">
-                ―
-            </div>
+            <input
+                type="text"
+                id="detailUpdated">
 
         </div>
 
@@ -1162,9 +1194,10 @@ color:#bbbbbb;
                 メモ
             </div>
 
-            <div id="detailMemo">
-                ―
-            </div>
+            <textarea
+                id="detailMemo"
+                rows="3">
+            </textarea>
 
         </div>
 
@@ -1484,57 +1517,78 @@ function loadMachineMasters(){
 
 
 /* =========================
+   機種プルダウン生成
+========================= */
+
+function renderMachineSelect(){
+
+    const select =
+
+        document.getElementById(
+            "machine"
+        );
+
+    if(!select){
+
+        return;
+
+    }
+
+    select.innerHTML = "";
+
+
+    const firstOption =
+
+        document.createElement(
+            "option"
+        );
+
+    firstOption.value = "";
+
+    firstOption.textContent =
+        "機種選択";
+
+    select.appendChild(
+        firstOption
+    );
+
+
+    machineMasters.forEach(
+
+        machine=>{
+
+            const option =
+
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+
+                machine.displayName;
+
+            option.textContent =
+
+                machine.displayName;
+
+            select.appendChild(
+                option
+            );
+
+        }
+
+    );
+
+}
+
+
+/* =========================
    初期化
 ========================= */
 
 loadMachineMasters();
 
-
-/* Part3 動作確認用（後で削除予定） */
-
-if(machineMasters.length === 0){
-
-    machineMasters = [
-
-        {
-
-            machineName:"L東京喰種",
-
-            displayName:"L東京喰種",
-            
-            maker:"SANKYO",
-    tenjo:"950G",
-    morning:"朝イチ950G→650G短縮あり",
-    target:"650G〜",
-    zone:"なし",
-    yametoki:"前兆確認後",
-    caution:"AT後即ヤメ注意",
-    yuriku:"リセット時再抽選",
-    note:"テストデータ",
-    updated:"2026-06",
-    memo:""
-
-        },
-
-        {
-
-            machineName:"L北斗の拳",
-
-            displayName:"L北斗の拳"
-
-        },
-
-        {
-
-            machineName:"Lゴッドイーター",
-
-            displayName:"Lゴッドイーター"
-
-        }
-
-    ];
-
-}
+renderMachineSelect();
 
 console.log(
     "machineMasters",
@@ -1546,6 +1600,8 @@ console.log(
 ========================= */
 
 let selectedMachine = null;
+
+let editingMachineIndex = -1;
 
 /* =========================
    機種一覧描画
@@ -1634,9 +1690,9 @@ listEl
 
         ()=>{
 
-            selectedMachine =
+            const targetIndex =
 
-                machineMasters.find(
+                machineMasters.findIndex(
 
                     m=>
 
@@ -1645,6 +1701,22 @@ listEl
                     item.dataset.machineId
 
                 );
+
+
+            selectedMachine =
+
+                machineMasters[
+                    targetIndex
+                ];
+
+
+            editingMachineIndex =
+                targetIndex;
+                
+            document.getElementById(
+                "deleteMachineBtn"
+            ).style.display =
+                "block";
 
 
             renderMachineDetail();
@@ -1676,80 +1748,277 @@ function renderMachineDetail(){
 
     document.getElementById(
         "detailMachine"
-    ).textContent =
-        selectedMachine.machineName || "―";
+    ).value =
+        selectedMachine.machineName || "";
 
 
     document.getElementById(
         "detailDisplayName"
-    ).textContent =
-        selectedMachine.displayName || "―";
+    ).value =
+        selectedMachine.displayName || "";
 
 
     document.getElementById(
         "detailMaker"
-    ).textContent =
-        selectedMachine.maker || "―";
+    ).value =
+        selectedMachine.maker || "";
 
 
     document.getElementById(
         "detailCeiling"
-    ).textContent =
-        selectedMachine.tenjo || "―";
+    ).value =
+        selectedMachine.tenjo || "";
 
 
     document.getElementById(
         "detailReset"
-    ).textContent =
-        selectedMachine.morning || "―";
+    ).value =
+        selectedMachine.morning || "";
 
 
     document.getElementById(
         "detailTarget"
-    ).textContent =
-        selectedMachine.target || "―";
+    ).value =
+        selectedMachine.target || "";
 
 
     document.getElementById(
         "detailZone"
-    ).textContent =
-        selectedMachine.zone || "―";
+    ).value =
+        selectedMachine.zone || "";
 
 
     document.getElementById(
         "detailQuit"
-    ).textContent =
-        selectedMachine.yametoki || "―";
+    ).value =
+        selectedMachine.yametoki || "";
 
 
     document.getElementById(
         "detailWarning"
-    ).textContent =
-        selectedMachine.caution || "―";
+    ).value =
+        selectedMachine.caution || "";
 
 
     document.getElementById(
         "detailYuriku"
-    ).textContent =
-        selectedMachine.yuriku || "―";
+    ).value =
+        selectedMachine.yuriku || "";
 
 
     document.getElementById(
         "detailSupplement"
-    ).textContent =
-        selectedMachine.note || "―";
+    ).value =
+        selectedMachine.note || "";
 
 
     document.getElementById(
         "detailUpdated"
-    ).textContent =
-        selectedMachine.updated || "―";
+    ).value =
+        selectedMachine.updated || "";
 
 
     document.getElementById(
         "detailMemo"
-    ).textContent =
-        selectedMachine.memo || "―";
+    ).value =
+        selectedMachine.memo || "";
+
+}
+
+
+/* =========================
+   機種保存
+========================= */
+
+const saveMachineBtn =
+document.getElementById(
+    "saveMachineBtn"
+);
+
+if(saveMachineBtn){
+
+    saveMachineBtn.addEventListener(
+
+        "click",
+
+        saveMachineDetail
+
+    );
+
+}
+
+
+function saveMachineDetail(){
+
+    const ok = confirm(
+        "保存しますか？"
+    );
+
+    if(!ok){
+
+        return;
+
+    }
+
+    const machineData = {
+
+        machineName:
+        document.getElementById(
+            "detailMachine"
+        ).value,
+
+        displayName:
+        document.getElementById(
+            "detailDisplayName"
+        ).value,
+
+        maker:
+        document.getElementById(
+            "detailMaker"
+        ).value,
+
+        tenjo:
+        document.getElementById(
+            "detailCeiling"
+        ).value,
+
+        morning:
+        document.getElementById(
+            "detailReset"
+        ).value,
+
+        target:
+        document.getElementById(
+            "detailTarget"
+        ).value,
+
+        zone:
+        document.getElementById(
+            "detailZone"
+        ).value,
+
+        yametoki:
+        document.getElementById(
+            "detailQuit"
+        ).value,
+
+        caution:
+        document.getElementById(
+            "detailWarning"
+        ).value,
+
+        yuriku:
+        document.getElementById(
+            "detailYuriku"
+        ).value,
+
+        note:
+        document.getElementById(
+            "detailSupplement"
+        ).value,
+
+        updated:
+        document.getElementById(
+            "detailUpdated"
+        ).value,
+
+        memo:
+        document.getElementById(
+            "detailMemo"
+        ).value
+
+    };
+
+
+    if(editingMachineIndex === -1){
+
+        machineMasters.push(
+            machineData
+        );
+
+    }else{
+
+        machineMasters[
+            editingMachineIndex
+        ] = machineData;
+
+    }
+
+
+    saveMachineMasters();
+
+    renderMachineList();
+
+    renderMachineSelect();
+
+    showPage(
+        "infoPage"
+    );
+
+}
+
+
+/* =========================
+   機種削除
+========================= */
+
+function deleteMachineMaster(){
+
+    if(editingMachineIndex === -1){
+
+        return;
+
+    }
+
+    const ok = confirm(
+        "この機種を削除しますか？"
+    );
+
+    if(!ok){
+
+        return;
+
+    }
+
+    machineMasters.splice(
+
+        editingMachineIndex,
+
+        1
+
+    );
+
+    saveMachineMasters();
+
+    renderMachineList();
+
+    renderMachineSelect();
+
+    selectedMachine = null;
+
+    editingMachineIndex = -1;
+
+    showPage(
+        "infoPage"
+    );
+
+}
+
+
+const deleteMachineBtn =
+document.getElementById(
+    "deleteMachineBtn"
+);
+
+if(deleteMachineBtn){
+
+    deleteMachineBtn.addEventListener(
+
+        "click",
+
+        deleteMachineMaster
+
+    );
 
 }
 
@@ -2576,16 +2845,14 @@ function renderAll(){
 
     renderGraph();
     
+    renderSelects();
+    
     renderMachineList();
-
+    
+    renderMachineSelect();
+    
 }
 
-
-/* =========================
-   初期描画
-========================= */
-
-renderAll();
 
 <!--Phase1 Part3-->
 
@@ -2836,13 +3103,6 @@ document
 
 
 /* =========================
-   起動時再描画
-========================= */
-
-renderAll();
-
-
-/* =========================
    設定データ
 ========================= */
 
@@ -2865,6 +3125,13 @@ localStorage.getItem(MACHINE_KEY)
 ||
 '["未設定"]'
 );
+
+
+/* =========================
+   起動時再描画
+========================= */
+
+renderAll();
 
 
 /* =========================
@@ -2903,18 +3170,6 @@ function renderSelects(){
 
     `).join("");
 
-
-    document
-    .getElementById("machine")
-    .innerHTML =
-    machines.map(machine=>`
-
-        <option>
-        ${machine}
-        </option>
-
-    `).join("");
-
 }
 
 
@@ -2940,33 +3195,6 @@ function renderSettings(){
 
         <button
         onclick="deleteShop(${index})"
-        style="width:80px">
-
-        削除
-
-        </button>
-
-        </div>
-
-    `).join("");
-
-
-    document
-    .getElementById("machineList")
-    .innerHTML =
-    machines.map((machine,index)=>`
-
-        <div
-        style="
-        display:flex;
-        justify-content:space-between;
-        margin-top:6px;
-        ">
-
-        <span>${machine}</span>
-
-        <button
-        onclick="deleteMachine(${index})"
         style="width:80px">
 
         削除
@@ -3015,40 +3243,6 @@ document
 
 
 /* =========================
-   機種追加
-========================= */
-
-document
-.getElementById("addMachineBtn")
-.addEventListener(
-"click",
-()=>{
-
-    const value =
-    document
-    .getElementById("newMachine")
-    .value
-    .trim();
-
-    if(!value) return;
-
-    machines.push(value);
-
-    saveSettings();
-
-    renderSettings();
-
-    renderSelects();
-
-    document
-    .getElementById("newMachine")
-    .value = "";
-
-}
-);
-
-
-/* =========================
    店舗削除
 ========================= */
 
@@ -3059,29 +3253,6 @@ function deleteShop(index){
     if(shops.length===0){
 
         shops.push("未設定");
-
-    }
-
-    saveSettings();
-
-    renderSettings();
-
-    renderSelects();
-
-}
-
-
-/* =========================
-   機種削除
-========================= */
-
-function deleteMachine(index){
-
-    machines.splice(index,1);
-
-    if(machines.length===0){
-
-        machines.push("未設定");
 
     }
 
@@ -4374,6 +4545,93 @@ if(openGraphBtn){
 
 
 /* =========================
+   機種追加
+========================= */
+
+const addMachineBtn =
+document.getElementById(
+    "addMachineBtn"
+);
+
+if(addMachineBtn){
+
+    addMachineBtn.addEventListener(
+
+        "click",
+
+        ()=>{
+
+            document.getElementById(
+                "detailMachine"
+            ).value = "";
+
+            document.getElementById(
+                "detailDisplayName"
+            ).value = "";
+
+            document.getElementById(
+                "detailMaker"
+            ).value = "";
+
+            document.getElementById(
+                "detailCeiling"
+            ).value = "";
+
+            document.getElementById(
+                "detailReset"
+            ).value = "";
+
+            document.getElementById(
+                "detailTarget"
+            ).value = "";
+
+            document.getElementById(
+                "detailZone"
+            ).value = "";
+
+            document.getElementById(
+                "detailQuit"
+            ).value = "";
+
+            document.getElementById(
+                "detailWarning"
+            ).value = "";
+
+            document.getElementById(
+                "detailYuriku"
+            ).value = "";
+
+            document.getElementById(
+                "detailSupplement"
+            ).value = "";
+
+            document.getElementById(
+                "detailUpdated"
+            ).value = "";
+
+            document.getElementById(
+                "detailMemo"
+            ).value = "";
+            
+            editingMachineIndex = -1;
+            
+            document.getElementById(
+                "deleteMachineBtn"
+            ).style.display =
+                "none";
+
+            showPage(
+                "machineDetailPage"
+            );
+
+        }
+
+    );
+
+}
+
+
+/* =========================
    機種JSONインポート
 ========================= */
 
@@ -4459,6 +4717,9 @@ document
 
 
                 renderMachineList();
+                
+                
+                renderMachineSelect();
 
 
                 alert(
