@@ -441,15 +441,17 @@ td{
 
 #graphContainer{
 
-    min-height:300px;
+    height:320px;
+
+    position:relative;
 
     border:1px solid #444;
 
     border-radius:12px;
 
-    padding:16px;
-
     margin-bottom:16px;
+
+    position:relative;
 
 }
 
@@ -565,45 +567,114 @@ td{
 
 }
 
+.game-adjust-buttons{
+
+    display:flex;
+
+    gap:6px;
+
+    margin-top:6px;
+
+    margin-bottom:10px;
+
+}
+
+.game-adjust-buttons button{
+
+    flex:1;
+
+    padding:8px 0;
+
+    font-size:14px;
+
+}
+
+
+.recent-filter{
+
+    display:flex;
+
+    gap:6px;
+
+    margin-bottom:12px;
+
+}
+
+.recent-btn{
+
+    flex:1;
+
+    background:#2a2a2a;
+
+    color:#fff;
+
+    border:1px solid #444;
+
+}
+
+.graph-separator{
+
+    margin:20px 0;
+
+}
+
+#recentGraphContainer{
+
+    border:1px solid #444;
+
+    border-radius:12px;
+
+    padding:16px;
+
+    margin-bottom:16px;
+
+    height:320px;
+
+    position:relative;
+
+}
+
+
+.recent-btn.active{
+
+    background:#5B8FD1 !important;
+
+    color:#fff !important;
+
+    border:1px solid #8EB8F0 !important;
+
+}
+
+.graph-section-title{
+
+    text-align:center;
+
+    margin:24px 0 16px 0;
+
+    font-weight:bold;
+
+    font-size:18px;
+
+}
+
+.summary-card{
+
+    border:1px solid #444;
+
+    border-radius:12px;
+
+    padding:16px;
+
+    margin-bottom:20px;
+
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 <body>
-
-<!-- HOME　ホーム画面 -->
-
-<div id="homePage" class="page active">
-
-<h2>ホーム</h2>
-
-<div class="card">
-総収支<br>
-<b id="totalProfit">0円</b>
-</div>
-
-<div class="card">
-今月収支<br>
-<b id="monthProfit">0円</b>
-</div>
-
-<div class="card">
-勝率<br>
-<b id="winRate">0%</b>
-</div>
-
-<div class="card">
-実戦回数<br>
-<b id="playCount">0</b>
-</div>
-
-<div class="card">
-最近5件
-<div id="recentList"></div>
-</div>
-
-</div>
 
 <!-- SETTINGS　設定画面 -->
 
@@ -671,7 +742,7 @@ color:#bbbbbb;
 
 <!-- ANALYSIS　分析画面 -->
 
-<div id="analysisPage" class="page">
+<div id="analysisPage" class="page active">
 
     <div class="analysis-header">
 
@@ -889,6 +960,93 @@ color:#bbbbbb;
 
     </div>
 
+<!-- 直近件数選択 -->
+
+<h3 class="graph-section-title">
+
+    直近実戦収支
+
+</h3>
+
+<div class="recent-filter">
+
+    <button
+        class="recent-btn"
+        data-count="25">
+
+        25件
+
+    </button>
+
+    <button
+        class="recent-btn active"
+        data-count="50">
+
+        50件
+
+    </button>
+
+    <button
+        class="recent-btn"
+        data-count="75">
+
+        75件
+
+    </button>
+
+    <button
+        class="recent-btn"
+        data-count="100">
+
+        100件
+
+    </button>
+
+</div>
+
+<!-- 直近件数グラフ -->
+
+<div id="recentGraphContainer">
+
+    <canvas id="recentGraphCanvas"></canvas>
+
+</div>
+
+
+<div class="summary-card">
+
+    <div>
+
+        最高収支：
+        <span id="recentMaxProfit">
+
+            0円
+
+        </span>
+
+    </div>
+
+    <div>
+
+        最低収支：
+        <span id="recentMinProfit">
+
+            0円
+
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- 年月グラフ -->
+
+<h3 class="graph-section-title">
+
+    年月別収支
+
+</h3>
 
     <div class="graph-filter">
 
@@ -1350,6 +1508,20 @@ type="number"
 id="startGame"
 placeholder="打ち始めG">
 
+<div class="game-adjust-buttons">
+
+    <button type="button" onclick="clearStartGame()">C</button>
+
+    <button type="button" onclick="addStartGame(500)">+500</button>
+
+    <button type="button" onclick="addStartGame(100)">+100</button>
+
+    <button type="button" onclick="addStartGame(10)">+10</button>
+
+    <button type="button" onclick="addStartGame(1)">+1</button>
+
+</div>
+
 <textarea
 id="memo"
 placeholder="メモ"></textarea>
@@ -1403,10 +1575,6 @@ id="deleteModal">
 <!-- NAV　下部タブ -->
 
 <div class="bottom-nav">
-
-<button data-page="homePage">
-ホーム
-</button>
 
 <button data-page="settingsPage">
 設定
@@ -2130,6 +2298,9 @@ let graphFilters = {
 
 let profitChart = null;
 
+let recentGraph = null;
+
+let recentCount = 50;
 
 <!--Phase1 Part2-->
 
@@ -2284,120 +2455,32 @@ document
 
 
 /* =========================
-   ホーム描画
+   打ち始めG補助ボタン
 ========================= */
 
-function renderHome(){
+function addStartGame(value){
 
-    const totalProfit =
-    records.reduce(
-        (sum,r)=>sum+r.profit,
-        0
-    );
+    const input =
 
-    document
-    .getElementById("totalProfit")
-    .textContent =
-    totalProfit.toLocaleString()
-    + "円";
+        document.getElementById(
+            "startGame"
+        );
 
+    const current =
 
-    const now = new Date();
+        parseInt(input.value || 0);
 
-    const currentMonth =
-    now.getFullYear()
-    + "-"
-    + String(
-        now.getMonth()+1
-      ).padStart(2,"0");
-
-    const monthProfit =
-    records
-    .filter(r=>
-        r.date.startsWith(
-            currentMonth
-        )
-    )
-    .reduce(
-        (sum,r)=>sum+r.profit,
-        0
-    );
-
-    document
-    .getElementById("monthProfit")
-    .textContent =
-    monthProfit.toLocaleString()
-    + "円";
-
-
-    const winCount =
-    records.filter(
-        r=>r.profit>0
-    ).length;
-
-    const winRate =
-    records.length === 0
-    ? 0
-    : (winCount / records.length * 100);
-
-    document
-    .getElementById("winRate")
-    .textContent =
-    winRate.toFixed(1)
-    + "%";
-
-
-    document
-    .getElementById("playCount")
-    .textContent =
-    records.length;
-
-
-    renderRecent();
+    input.value =
+        current + value;
 
 }
 
 
-/* =========================
-   最近5件
-========================= */
+function clearStartGame(){
 
-function renderRecent(){
-
-    const area =
     document.getElementById(
-        "recentList"
-    );
-
-    const latest =
-    [...records]
-    .sort(
-        (a,b)=>
-        b.id-a.id
-    )
-    .slice(0,5);
-
-    area.innerHTML =
-    latest.map(r=>`
-
-        <div style="
-            padding:6px;
-            border-bottom:1px solid #333;
-        ">
-
-        ${r.date}
-
-        <br>
-
-        ${r.machine}
-
-        <br>
-
-        ${r.profit.toLocaleString()}円
-
-        </div>
-
-    `).join("");
+        "startGame"
+    ).value = "";
 
 }
 
@@ -2831,8 +2914,6 @@ document
 
 function renderAll(){
 
-    renderHome();
-
     renderFilters();
 
     renderList();
@@ -2844,6 +2925,8 @@ function renderAll(){
     renderGraphFilters();
 
     renderGraph();
+    
+    renderRecentGraph();
     
     renderSelects();
     
@@ -3922,8 +4005,316 @@ document
     }
 );
 
+
 /* =========================
-   グラフフィルタ生成
+   グラフ直近件数ボタン
+========================= */
+
+document
+.querySelectorAll(
+    ".recent-btn"
+)
+.forEach(btn=>{
+
+    btn.addEventListener(
+
+        "click",
+
+        ()=>{
+
+            recentCount =
+
+                Number(
+                    btn.dataset.count
+                );
+
+            document
+            .querySelectorAll(
+                ".recent-btn"
+            )
+            .forEach(b=>{
+
+                b.classList.remove(
+                    "active"
+                );
+
+            });
+
+            btn.classList.add(
+                "active"
+            );
+
+            renderRecentGraph();
+
+        }
+
+    );
+
+});
+
+
+/* =========================
+   直近件数グラフ
+========================= */
+
+function renderRecentGraph(){
+
+    const canvas =
+
+        document.getElementById(
+            "recentGraphCanvas"
+        );
+
+    if(!canvas){
+
+        return;
+
+    }
+
+
+    const sortedRecords =
+
+        [...records]
+
+        .sort(
+
+            (a,b)=>
+
+                new Date(a.date) -
+                new Date(b.date)
+
+        );
+
+
+    const recentRecords =
+
+        sortedRecords.slice(
+            -recentCount
+        );
+
+
+    const labels =
+
+        recentRecords.map(r=>{
+
+            if(!r.date){
+
+                return "";
+
+            }
+
+            return r.date.slice(5);
+
+        });
+
+
+    const profits =
+
+        recentRecords.map(
+
+            r=>
+
+            Number(
+                r.profit || 0
+            )
+
+        );
+
+
+    let cumulative = 0;
+
+    const cumulativeData =
+
+        profits.map(v=>{
+
+            cumulative += v;
+
+            return cumulative;
+
+        });
+
+
+    if(recentGraph){
+
+        recentGraph.destroy();
+
+    }
+
+
+    recentGraph =
+
+        new Chart(
+
+            canvas,
+
+            {
+
+                type:"bar",
+
+                data:{
+
+                    labels,
+
+                    datasets:[
+
+                        {
+                            type:"line",
+
+                            label:"累計",
+
+                            data:cumulativeData,
+
+                            borderColor:"#FFD700",
+
+                            backgroundColor:"#FFD700",
+
+                            pointBackgroundColor:"#FFD700",
+
+                            pointRadius:4,
+
+                            tension:0.2
+
+                        },
+
+                        {
+
+                            label:"収支",
+
+                            data:profits,
+
+                            backgroundColor:"#5B8FD1"
+
+                        }
+
+                    ]
+
+                },
+
+options:{
+
+    responsive:true,
+
+    maintainAspectRatio:false,
+
+    interaction:{
+
+        mode:"index",
+
+        intersect:false
+
+    },
+
+    scales:{
+
+        x:{
+
+            ticks:{
+
+                maxRotation:45,
+
+                autoSkip:true,
+
+                maxTicksLimit:12
+
+            }
+
+        },
+
+        y:{
+
+            beginAtZero:true,
+
+            grid:{
+
+                color:(context)=>{
+
+                    return context.tick.value === 0
+
+                        ? "#FFFFFF"
+
+                        : "rgba(255,255,255,0.15)";
+
+                },
+
+                lineWidth:(context)=>{
+
+                    return context.tick.value === 0
+
+                        ? 3
+
+                        : 1;
+
+                }
+
+            }
+
+        }
+
+    },
+
+    plugins:{
+
+        tooltip:{
+
+            enabled:true
+
+        }
+
+    }
+
+}
+
+            }
+
+        );
+
+
+    const maxProfit =
+
+        profits.length
+
+        ?
+
+        Math.max(...profits)
+
+        :
+
+        0;
+
+
+    const minProfit =
+
+        profits.length
+
+        ?
+
+        Math.min(...profits)
+
+        :
+
+        0;
+
+
+    document.getElementById(
+        "recentMaxProfit"
+    ).textContent =
+
+        maxProfit.toLocaleString()
+        + "円";
+
+
+    document.getElementById(
+        "recentMinProfit"
+    ).textContent =
+
+        minProfit.toLocaleString()
+        + "円";
+
+}
+
+
+/* =========================
+   年月グラフフィルタ生成
 ========================= */
 
 function renderGraphFilters(){
@@ -4152,7 +4543,7 @@ document
 );
 
 /* =========================
-   グラフデータ生成
+   年月グラフデータ生成
 ========================= */
 
 function createGraphData(){
@@ -4293,7 +4684,7 @@ function createGraphData(){
 }
 
 /* =========================
-   グラフ描画
+   年月グラフ描画
 ========================= */
 
 function renderGraph(){
@@ -4311,7 +4702,12 @@ function renderGraph(){
 
     if(profitChart){
         profitChart.destroy();
+        
+        profitChart = null;
     }
+    
+    canvas.width = 0;
+    canvas.height = 0;
 
     profitChart = new Chart(
 
