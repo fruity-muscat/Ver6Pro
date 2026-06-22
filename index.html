@@ -50,7 +50,7 @@ textarea,
 button{
     width:100%;
     padding:10px;
-    margin-top:8px;
+    margin-top:4px;
 
     background:#2a2a2a;
     color:white;
@@ -197,14 +197,14 @@ td{
 
 .amount-buttons{
     display:flex;
-    gap:8px;
-    margin-top:8px;
+    gap:4px;
+    margin-top:4px;
 }
 
 .amount-buttons button{
     flex:1;
     margin-top:0;
-    padding:10px;
+    padding:8px;
     font-size:14px;
 }
 
@@ -577,11 +577,11 @@ td{
 
     display:flex;
 
-    gap:6px;
+    gap:4px;
 
-    margin-top:6px;
+    margin-top:4px;
 
-    margin-bottom:10px;
+    margin-bottom:4px;
 
 }
 
@@ -595,6 +595,35 @@ td{
 
 }
 
+.time-zone-buttons{
+
+    display:flex;
+
+    gap:4px;
+
+    margin-top:6px;
+
+}
+
+.time-btn{
+
+    flex:1;
+
+    padding:8px 0;
+
+    font-size:14px;
+
+}
+
+.time-btn.active{
+
+    background:#5B8FD1;
+
+    color:#fff;
+
+    border:1px solid #8EB8F0;
+
+}
 
 .recent-filter{
 
@@ -685,19 +714,19 @@ td{
 
     border-radius:12px;
 
-    padding:10px;
+    padding:8px;
     
-    margin-top:12px;
+    margin-top:8px;
 
-    margin-bottom:12px;
+    margin-bottom:8px;
 
 }
 
 /* カード内の入力欄 */
 
-.input-group input{
+#registerPage .input-group input{
 
-    margin-top:0;
+    margin-top:0 !important;
 
 }
 
@@ -706,9 +735,19 @@ td{
 .input-group .amount-buttons,
 .input-group .game-adjust-buttons{
 
-    margin-top:10px;
+    margin-top:2px;
 
     margin-bottom:0;
+
+}
+
+.time-zone-buttons .time-btn.active{
+
+    background:#5B8FD1 !important;
+
+    color:#ffffff !important;
+
+    border:2px solid #8EB8F0 !important;
 
 }
 
@@ -1575,6 +1614,46 @@ placeholder="打ち始めG">
 
 </div>
 
+<div class="time-zone-buttons">
+
+    <button
+        type="button"
+        class="time-btn"
+        data-time="朝イチ">
+
+        朝イチ
+
+    </button>
+
+    <button
+        type="button"
+        class="time-btn"
+        data-time="午前">
+
+        午前
+
+    </button>
+
+    <button
+        type="button"
+        class="time-btn"
+        data-time="午後">
+
+        午後
+
+    </button>
+
+    <button
+        type="button"
+        class="time-btn"
+        data-time="夕方">
+
+        夕方
+
+    </button>
+
+</div>
+
 </div>
 
 <textarea
@@ -1666,6 +1745,14 @@ localStorage.getItem(STORAGE_KEY)
 
 let editingId = null;
 let selectedId = null;
+
+let selectedTimeZone = "";
+
+/* =========================
+   編集状態管理
+========================= */
+
+let isEditMode = false;
 
 /* =========================
    機種マスタ
@@ -2305,7 +2392,54 @@ JSON.stringify(records)
 
 }
 
+
+/* =========================
+   登録画面初期化
+========================= */
+
+function clearRegisterForm(){
+
+    document.getElementById("date").value = "";
+
+    document.getElementById("shop").selectedIndex = 0;
+
+    document.getElementById("machine").selectedIndex = 0;
+
+    document.getElementById("investment").value = "";
+
+    document.getElementById("collection").value = "";
+
+    document.getElementById("startGame").value = "";
+
+    document.getElementById("memo").value = "";
+
+}
+
+
+/* =========================
+   登録画面表示
+========================= */
+
 function showPage(pageId){
+
+    if(
+        isEditMode &&
+        pageId !== "registerPage"
+    ){
+
+        editingId = null;
+
+        isEditMode = false;
+
+        document
+        .getElementById(
+            "editDeleteBtn"
+        )
+        .style.display = "none";
+        
+        clearRegisterForm();
+
+    }
 
 document
 .querySelectorAll(".page")
@@ -2397,6 +2531,9 @@ function saveRecord(){
         Number(
             document.getElementById("startGame").value
         ) || "",
+        
+        timeZone:
+        selectedTimeZone,
 
         memo:
         document.getElementById("memo").value,
@@ -2538,6 +2675,63 @@ function clearStartGame(){
     ).value = "";
 
 }
+
+
+/* =========================
+   打ち始め時間帯
+========================= */
+
+document
+.querySelectorAll(
+    ".time-btn"
+)
+.forEach(btn=>{
+
+    btn.addEventListener(
+
+        "click",
+
+        ()=>{
+
+            if(
+                selectedTimeZone ===
+                btn.dataset.time
+            ){
+
+                selectedTimeZone = "";
+
+                btn.classList.remove(
+                    "active"
+                );
+
+                return;
+
+            }
+
+            document
+            .querySelectorAll(
+                ".time-btn"
+            )
+            .forEach(b=>{
+
+                b.classList.remove(
+                    "active"
+                );
+
+            });
+
+            selectedTimeZone =
+                btn.dataset.time;
+
+            btn.classList.add(
+                "active"
+            );
+
+        }
+
+    );
+
+});
 
 
 /* =========================
@@ -3049,6 +3243,11 @@ function openDetail(id){
         ${record.startGame || "-"}</p>
 
         <br>
+        
+        <p><b>打ち始め時間帯</b><br>
+        ${record.timeZone ? "🕒 " + record.timeZone : "未選択"}</p>
+
+        <br>
 
         <p><b>メモ</b><br>
         ${record.memo || ""}</p>
@@ -3084,6 +3283,8 @@ function editRecord(){
 
     editingId =
     record.id;
+    
+    isEditMode = true;
 
     document
     .getElementById("date")
@@ -3119,6 +3320,32 @@ function editRecord(){
     .getElementById("memo")
     .value =
     record.memo;
+    
+selectedTimeZone =
+    record.timeZone || "";
+
+document
+.querySelectorAll(
+    ".time-btn"
+)
+.forEach(btn=>{
+
+    btn.classList.remove(
+        "active"
+    );
+
+    if(
+        btn.dataset.time ===
+        selectedTimeZone
+    ){
+
+        btn.classList.add(
+            "active"
+        );
+
+    }
+
+});
 
     document
     .getElementById("editDeleteBtn")
