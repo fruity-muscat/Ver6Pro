@@ -144,6 +144,12 @@ td{
     -moz-appearance:none;
 }
 
+#machine{
+
+    margin-bottom:8px;
+
+}
+
 #registerPage input,
 #registerPage select,
 #registerPage textarea,
@@ -666,6 +672,43 @@ td{
     padding:16px;
 
     margin-bottom:20px;
+
+}
+
+/* =========================
+   入力グループ
+========================= */
+
+.input-group{
+
+    background:#1f1f1f;
+
+    border-radius:12px;
+
+    padding:10px;
+    
+    margin-top:12px;
+
+    margin-bottom:12px;
+
+}
+
+/* カード内の入力欄 */
+
+.input-group input{
+
+    margin-top:0;
+
+}
+
+/* ボタン行の余白 */
+
+.input-group .amount-buttons,
+.input-group .game-adjust-buttons{
+
+    margin-top:10px;
+
+    margin-bottom:0;
 
 }
 
@@ -1455,6 +1498,8 @@ color:#bbbbbb;
 <select id="machine">
 </select>
 
+<div class="input-group">
+
 <input
 type="number"
 id="investment"
@@ -1478,6 +1523,10 @@ placeholder="投資">
     </button>
 </div>
 
+</div>
+
+
+<div class="input-group">
 
 <input
 type="number"
@@ -1502,6 +1551,10 @@ placeholder="回収">
     </button>
 </div>
 
+</div>
+
+
+<div class="input-group">
 
 <input
 type="number"
@@ -1519,6 +1572,8 @@ placeholder="打ち始めG">
     <button type="button" onclick="addStartGame(10)">+10</button>
 
     <button type="button" onclick="addStartGame(1)">+1</button>
+
+</div>
 
 </div>
 
@@ -1837,7 +1892,7 @@ listEl.innerHTML =
         machine=>`
             <div
                 class="machine-item"
-                data-machine-id="${machine.machineName}">
+                data-machine-id="${machine.displayName}">
 
                 ${machine.displayName}
 
@@ -1864,7 +1919,7 @@ listEl
 
                     m=>
 
-                    m.machineName ===
+                    m.displayName ===
 
                     item.dataset.machineId
 
@@ -5088,6 +5143,48 @@ document
                         e.target.result
                     );
 
+/* =========================
+   重複チェック
+========================= */
+
+const duplicateMachines = [];
+
+const newMachines = [];
+
+imported.forEach(importMachine=>{
+
+    const existingIndex =
+
+        machineMasters.findIndex(
+
+            machine =>
+
+                machine.displayName ===
+
+                importMachine.displayName
+
+        );
+
+    if(existingIndex !== -1){
+
+        duplicateMachines.push({
+
+            index : existingIndex,
+
+            data  : importMachine
+
+        });
+
+    }else{
+
+        newMachines.push(
+            importMachine
+        );
+
+    }
+
+});
+
 
                 if(
 
@@ -5104,25 +5201,115 @@ document
                 }
 
 
-                machineMasters =
+/* =========================
+   新規機種追加
+========================= */
 
-                    imported;
-
-
-                saveMachineMasters();
-
-
-                renderMachineList();
-                
-                
-                renderMachineSelect();
+machineMasters.push(
+    ...newMachines
+);
 
 
-                alert(
+/* =========================
+   重複機種確認
+========================= */
 
-                    `${machineMasters.length}件の機種情報を取り込みました。`
+let updatedCount = 0;
 
-                );
+let skippedCount = 0;
+
+if(duplicateMachines.length > 0){
+
+    const displayList =
+
+        duplicateMachines
+        .slice(0,10)
+        .map(
+            m=>`・${m.data.displayName}`
+        )
+        .join("\n");
+
+    const overCount =
+
+        duplicateMachines.length > 10
+
+        ?
+
+        `\n他 ${
+            duplicateMachines.length - 10
+        } 件`
+
+        :
+
+        "";
+
+
+    const result = confirm(
+
+        `以下の機種は既に存在します。\n\n` +
+
+        displayList +
+
+        overCount +
+
+        `\n\n上書き更新しますか？`
+
+    );
+
+
+    if(result){
+
+        duplicateMachines.forEach(
+
+            item=>{
+
+                machineMasters[
+                    item.index
+                ] = item.data;
+
+            }
+
+        );
+        
+        updatedCount =
+            duplicateMachines.length;
+
+    }else{
+
+        skippedCount =
+            duplicateMachines.length;
+
+    }
+
+}
+
+
+/* =========================
+   保存
+========================= */
+
+saveMachineMasters();
+
+renderMachineList();
+
+renderMachineSelect();
+
+
+/* =========================
+   完了通知
+========================= */
+
+alert(
+
+    `インポート完了\n\n` +
+
+    `追加：${newMachines.length}件\n` +
+
+    `更新：${updatedCount}件\n` +
+
+    `スキップ：${skippedCount}件`
+
+);
 
             }
 
